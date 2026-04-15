@@ -247,6 +247,23 @@
   }
   .placeholder-msg .icon { font-size: 48px; margin-bottom: 16px; }
 
+  /* ── DEMO BANNER ── */
+  .demo-banner {
+    background: linear-gradient(135deg, rgba(249,115,22,0.1), rgba(251,191,36,0.1));
+    border: 1px solid rgba(249,115,22,0.3); border-radius: 12px;
+    padding: 14px 20px; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 12px; font-size: 14px;
+    color: var(--orange); line-height: 1.6;
+  }
+  .demo-banner .demo-icon { font-size: 22px; flex-shrink: 0; }
+  .demo-banner .demo-text strong { color: var(--text); }
+  .demo-banner .demo-dismiss {
+    margin-left: auto; background: rgba(249,115,22,0.15); border: 1px solid rgba(249,115,22,0.3);
+    color: var(--orange); border-radius: 6px; padding: 4px 12px; font-size: 12px;
+    cursor: pointer; font-weight: 600; white-space: nowrap;
+  }
+  .demo-banner .demo-dismiss:hover { background: rgba(249,115,22,0.25); }
+
   @media (max-width: 768px) {
     .header { padding: 16px 20px; }
     .client-bar { padding: 12px 20px; }
@@ -435,6 +452,8 @@ const i18n = {
     printBtn: "Print",
     totalMarks: "Total Marks", registered: "Registered", pending: "Pending", atRisk: "At Risk",
     jurisdictionCount: "Jurisdictions", niceClassCount: "Nice Classes",
+    demoBannerText: '<strong>Public Demo Data</strong> \u2014 The data shown below is publicly available test data (Sugar & Spice / \u7CD6\u6751). Load your own JSON to replace it with real portfolio analysis.',
+    demoDismiss: "Dismiss",
     overallRisk: "Overall Risk",
     portfolioOverview: "Portfolio Overview", allMarksGlance: "All Marks at a Glance",
     mark: "Mark", status: "Status", classes: "Class(es)", jurisdiction: "Jurisdiction", risk: "Risk",
@@ -523,6 +542,8 @@ const i18n = {
     printBtn: "列印",
     totalMarks: "商標總數", registered: "已註冊", pending: "審查中", atRisk: "需注意",
     jurisdictionCount: "管轄機構", niceClassCount: "尼斯分類",
+    demoBannerText: '<strong>公開資料測試用</strong> \u2014 以下顯示的是公開可取得之測試資料（糖村 Sugar & Spice）。請匯入您的 JSON 檔案以進行實際商標組合分析。',
+    demoDismiss: "關閉提示",
     overallRisk: "整體風險",
     portfolioOverview: "商標組合總覽", allMarksGlance: "所有商標一覽",
     mark: "商標", status: "狀態", classes: "類別", jurisdiction: "管轄區", risk: "風險",
@@ -738,6 +759,7 @@ function computeRisk(m) {
 // ═══════════════════════════════════════════════
 let currentData = null;
 let normalizedMarks = [];
+let isDemo = false;
 
 // ═══════════════════════════════════════════════
 // LANGUAGE SWITCH
@@ -763,6 +785,7 @@ function handleJSONUpload(event) {
   reader.onload = function(e) {
     try {
       const data = JSON.parse(e.target.result);
+      isDemo = false;
       loadPortfolio(data);
     } catch(err) { alert('JSON parse error: '+err.message); }
   };
@@ -822,6 +845,15 @@ function renderAll(data) {
     '<div class="summary-stat"><div class="val">'+allJuris.length+'</div><div class="desc">'+t('jurisdictionCount')+'</div></div>' +
     '<div class="summary-stat"><div class="val">'+allClasses.length+'</div><div class="desc">'+t('niceClassCount')+'</div></div>' +
   '</div>';
+
+  // Demo banner
+  if (isDemo) {
+    app.innerHTML += '<div class="demo-banner" id="demoBanner">' +
+      '<div class="demo-icon">&#9888;&#65039;</div>' +
+      '<div class="demo-text">' + t('demoBannerText') + '</div>' +
+      '<button class="demo-dismiss" onclick="document.getElementById(\'demoBanner\').style.display=\'none\'">' + t('demoDismiss') + '</button>' +
+    '</div>';
+  }
 
   // Portfolio table
   app.innerHTML += renderPortfolioTable();
@@ -1113,7 +1145,7 @@ function toggleSection(header) {
 // INIT — load demo data on page ready
 // ═══════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', function() {
-  setTimeout(function() { loadPortfolio(DEMO_DATA); }, 300);
+  setTimeout(function() { isDemo = true; loadPortfolio(DEMO_DATA); }, 300);
 });
 </script>
 </body>
