@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Senior Trademark Strategist & Portfolio Advisor</title>
+<style>
+  :root {
+    --navy: #0f172a;
+    --navy-light: #1e293b;
+    --teal: #0ea5e9;
+    --teal-dark: #0284c7;
+    --gold: #f59e0b;
+    --gold-light: #fbbf24;
+    --red: #ef4444;
+    --orange: #f97316;
+    --green: #10b981;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --card-hover: #f1f5f9;
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --input-bg: #f1f5f9;
+    --accent-gradient: linear-gradient(135deg, #0ea5e9, #6366f1);
+    --accent-purple: #6366f1;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg); color: var(--text);
+    min-height: 100vh; line-height: 1.6;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+    padding: 20px 40px; display: flex; align-items: center; gap: 16px;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .header::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, #0ea5e9, #6366f1, #0ea5e9);
+  }
+  .header-icon {
+    width: 44px; height: 44px; background: var(--accent-gradient);
+    border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    font-size: 22px; box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3); flex-shrink: 0;
+  }
+  .header h1 { font-size: 20px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
+  .header p { font-size: 12px; color: #94a3b8; margin-top: 1px; }
+  .header-actions { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+  .lang-toggle {
+    display: flex; gap: 2px; background: rgba(255,255,255,0.1);
+    border-radius: 8px; padding: 3px;
+  }
+  .lang-btn {
+    padding: 5px 14px; border: none; border-radius: 6px;
+    font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  .lang-btn.active { background: rgba(255,255,255,0.9); color: #0f172a; }
+  .lang-btn:not(.active) { background: transparent; color: #94a3b8; }
+  .load-btn {
+    padding: 7px 16px; background: rgba(14,165,233,0.2); border: 1px solid rgba(14,165,233,0.4);
+    border-radius: 8px; color: #38bdf8; font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+  }
+  .load-btn:hover { background: rgba(14,165,233,0.3); }
+  .load-btn input { display: none; }
+
+  /* ── CLIENT INFO BAR ── */
+  .client-bar {
+    background: var(--card); border-bottom: 1px solid var(--border);
+    padding: 14px 40px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+  }
+  .client-bar .client-name { font-size: 16px; font-weight: 700; color: var(--navy); }
+  .client-bar .client-meta { font-size: 13px; color: var(--text-muted); }
+  .client-bar .tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    background: rgba(14,165,233,0.1); color: var(--teal); border: 1px solid rgba(14,165,233,0.2);
+  }
+
+  /* ── MAIN CONTENT ── */
+  .main { max-width: 1200px; margin: 0 auto; padding: 24px 24px 80px; }
+
+  /* ── SUMMARY DASHBOARD ── */
+  .summary-bar {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    border-radius: 16px; padding: 20px 24px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 16px; margin-bottom: 24px;
+  }
+  .summary-stat { text-align: center; }
+  .summary-stat .val { font-size: 28px; font-weight: 700; color: #38bdf8; }
+  .summary-stat .val.risk-val-high { color: #f87171; }
+  .summary-stat .val.risk-val-medium { color: #fbbf24; }
+  .summary-stat .val.risk-val-low { color: #34d399; }
+  .summary-stat .desc {
+    font-size: 11px; color: #94a3b8; text-transform: uppercase;
+    letter-spacing: 0.5px; margin-top: 4px;
+  }
+
+  /* ── REPORT SECTIONS ── */
+  .report-section {
+    background: var(--card); border-radius: 16px; border: 1px solid var(--border);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04); overflow: hidden;
+    margin-bottom: 20px; animation: fadeSlideIn 0.4s ease;
+  }
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .section-header {
+    padding: 16px 20px; display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.2s;
+  }
+  .section-header:hover { background: var(--card-hover); }
+  .section-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
+  }
+  .section-header h3 { font-size: 15px; font-weight: 600; flex: 1; }
+  .section-header .step-num {
+    font-size: 11px; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .section-body { padding: 20px; }
+  .section-body.collapsed { display: none; }
+
+  /* ── ADVICE ITEMS ── */
+  .advice-item {
+    padding: 12px 16px; margin-bottom: 10px; background: var(--input-bg);
+    border-radius: 8px; border-left: 3px solid var(--teal);
+    font-size: 14px; line-height: 1.7;
+  }
+  .advice-item.warning { border-left-color: var(--orange); }
+  .advice-item.danger { border-left-color: var(--red); }
+  .advice-item.success { border-left-color: var(--green); }
+  .advice-item strong { color: var(--teal); }
+  .advice-item .label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--text-muted); margin-bottom: 4px; display: block;
+  }
+
+  /* ── RISK BADGES ── */
+  .risk-badge {
+    padding: 4px 12px; border-radius: 20px; font-size: 12px;
+    font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .risk-low { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+  .risk-medium { background: #fff7ed; color: #d97706; border: 1px solid #fed7aa; }
+  .risk-high { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+
+  /* ── TABLES ── */
+  .data-table {
+    width: 100%; border-collapse: collapse; font-size: 13px;
+  }
+  .data-table th {
+    text-align: left; padding: 10px 12px; color: var(--text-muted);
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--border); background: var(--input-bg);
+  }
+  .data-table td {
+    padding: 10px 12px; border-bottom: 1px solid var(--border);
+  }
+  .data-table tbody tr { cursor: pointer; transition: background 0.15s; }
+  .data-table tbody tr:hover { background: var(--card-hover); }
+  .data-table tr:last-child td { border-bottom: none; }
+  .status-dot {
+    display: inline-block; width: 8px; height: 8px;
+    border-radius: 50%; margin-right: 6px;
+  }
+  .status-dot.registered { background: var(--green); }
+  .status-dot.pending { background: var(--gold); }
+  .status-dot.expired { background: var(--red); }
+
+  /* ── NICE CLASS GRID ── */
+  .nice-class-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px;
+  }
+  .nice-chip {
+    padding: 8px 12px; background: var(--input-bg); border-radius: 8px;
+    font-size: 13px; border: 1px solid var(--border);
+  }
+  .nice-chip.current { border-color: var(--teal); }
+  .nice-chip.suggested { border-color: var(--gold); border-style: dashed; }
+  .nice-chip .chip-label { font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 2px; }
+
+  /* ── USE VS REG COMPARISON ── */
+  .use-vs-reg-card {
+    background: linear-gradient(135deg, rgba(249,115,22,0.05), rgba(239,68,68,0.05));
+    border: 1px solid rgba(249,115,22,0.2); border-radius: 12px; padding: 16px; margin-bottom: 10px;
+  }
+  .use-vs-reg-card h4 { color: var(--orange); font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .comparison-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 8px 0;
+  }
+  .comparison-col {
+    padding: 10px; background: rgba(255,255,255,0.7); border-radius: 8px; font-size: 13px;
+  }
+  .comparison-col .col-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--text-muted); margin-bottom: 4px;
+  }
+
+  /* ── MARK DETAIL OVERLAY ── */
+  .mark-detail-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15,23,42,0.5); z-index: 100;
+    display: flex; align-items: flex-start; justify-content: center;
+    padding: 60px 20px; overflow-y: auto;
+  }
+  .mark-detail-panel {
+    background: var(--bg); border-radius: 20px; max-width: 900px; width: 100%;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.25); max-height: calc(100vh - 80px);
+    overflow-y: auto;
+  }
+  .mark-detail-header {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    padding: 20px 24px; border-radius: 20px 20px 0 0;
+    display: flex; align-items: center; gap: 16px; position: sticky; top: 0; z-index: 1;
+  }
+  .mark-detail-header h2 { color: #fff; font-size: 18px; flex: 1; }
+  .mark-detail-header .close-btn {
+    background: rgba(255,255,255,0.1); border: none; color: #94a3b8;
+    width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
+    font-size: 16px; display: flex; align-items: center; justify-content: center;
+  }
+  .mark-detail-header .close-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
+  .mark-detail-body { padding: 24px; }
+
+  /* ── BACK TO TOP ── */
+  .fab {
+    position: fixed; bottom: 24px; right: 24px;
+    padding: 12px 20px; background: var(--accent-gradient); color: #fff;
+    border: none; border-radius: 10px; font-size: 14px; font-weight: 700;
+    cursor: pointer; box-shadow: 0 4px 20px rgba(14,165,233,0.3);
+    z-index: 50; transition: transform 0.15s; display: flex; align-items: center; gap: 8px;
+  }
+  .fab:hover { transform: translateY(-2px); }
+
+  /* ── PLACEHOLDER ── */
+  .placeholder-msg {
+    background: var(--card); border-radius: 16px; border: 1px dashed var(--border);
+    padding: 80px 40px; text-align: center; color: var(--text-muted); font-size: 15px; line-height: 1.8;
+  }
+  .placeholder-msg .icon { font-size: 48px; margin-bottom: 16px; }
+
+  @media (max-width: 768px) {
+    .header { padding: 16px 20px; }
+    .client-bar { padding: 12px 20px; }
+    .main { padding: 16px; }
+    .comparison-row { grid-template-columns: 1fr; }
+    .summary-bar { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media print {
+    .header, .fab, .load-btn { display: none !important; }
+    .report-section { break-inside: avoid; }
+    .mark-detail-overlay { position: static; background: none; padding: 0; }
+    .mark-detail-panel { box-shadow: none; max-height: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-icon">&#9878;</div>
+  <div style="flex:1; min-width: 0;">
+    <h1 id="headerTitle">資深商標策略師與組合管理顧問</h1>
+    <p id="headerSub">全球商標申請 • 組合管理 • 智慧財產權執法</p>
+  </div>
+  <div class="header-actions">
+    <div class="lang-toggle">
+      <button class="lang-btn" id="langEN" onclick="setLang('en')">EN</button>
+      <button class="lang-btn active" id="langZH" onclick="setLang('zh')">中文</button>
+    </div>
+    <label class="load-btn">
+      <input type="file" accept=".json" onchange="handleJSONUpload(event)">
+      &#128194; <span id="loadBtnText">載入 JSON</span>
+    </label>
+    <button class="fab" style="position:static; box-shadow:none; padding:7px 16px; font-size:12px;" onclick="window.print()">
+      &#128438; <span id="printBtnText">列印</span>
+    </button>
+  </div>
+</div>
+
+<div class="client-bar" id="clientBar" style="display:none;"></div>
+<div class="main" id="app">
+  <div class="placeholder-msg" id="placeholder">
+    <div class="icon">&#9878;</div>
+    <strong id="phTitle">正在載入示範資料...</strong>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// LANGUAGE STATE — default to ZH
+// ═══════════════════════════════════════════════
+let currentLang = 'zh';
+
+// ═══════════════════════════════════════════════
+// EMBEDDED DEMO DATA — 糖村 Sugar & Spice
+// ═══════════════════════════════════════════════
+const DEMO_DATA = {
+  client_info: {
+    name_zh: "笠豐食品有限公司（糖村）",
+    name_en: "Sugar & Spice Bakery Co., Ltd.",
+    industry_zh: "烘焙食品製造與零售",
+    industry_en: "Bakery Manufacturing & Retail",
+    founded: "2002",
+    headquarters_zh: "台灣台中市",
+    headquarters_en: "Taichung, Taiwan"
+  },
+  marks: [
+    {
+      mark: "糖村", client: "笠豐食品有限公司", type: "Word",
+      status: "Registered", jurisdiction: "TIPO",
+      classes: "30, 35", filing_date: "2005-03-10", registration_date: "2006-01-15",
+      goods_services: "糕餅、牛軋糖、鳳梨酥、太陽餅等烘焙食品；烘焙食品之零售服務",
+      serial_number: "094012345", reg_number: "01234567"
+    },
+    {
+      mark: "糖村 SUGAR & SPICE", client: "笠豐食品有限公司", type: "Composite",
+      status: "Registered", jurisdiction: "TIPO",
+      classes: "30, 35, 43", filing_date: "2008-06-20", registration_date: "2009-04-10",
+      goods_services: "糕餅、糖果、巧克力；烘焙食品零售；餐廳、咖啡廳服務",
+      serial_number: "097025678", reg_number: "01398765"
+    },
+    {
+      mark: "糖村", client: "笠豐食品有限公司", type: "Word",
+      status: "Registered", jurisdiction: "CNIPA",
+      classes: "30", filing_date: "2012-09-05", registration_date: "2014-02-20",
+      goods_services: "糕点、牛轧糖、凤梨酥、面包、饼干",
+      serial_number: "CN201230456", reg_number: "ZC12345678"
+    },
+    {
+      mark: "SUGAR & SPICE", client: "Sugar & Spice Bakery Co., Ltd.", type: "Word",
+      status: "Registered", jurisdiction: "CNIPA",
+      classes: "30, 35", filing_date: "2015-01-12", registration_date: "2016-08-30",
+      goods_services: "Confectionery, nougat, pineapple cakes; retail services for bakery products",
+      serial_number: "CN201500789", reg_number: "ZC23456789"
+    },
+    {
+      mark: "糖村", client: "笠豐食品有限公司", type: "Word",
+      status: "Registered", jurisdiction: "JPO",
+      classes: "30", filing_date: "2016-04-18", registration_date: "2017-06-22",
+      goods_services: "菓子、ヌガー、パイナップルケーキ、洋菓子",
+      serial_number: "JP2016-045678", reg_number: "JP6012345"
+    },
+    {
+      mark: "糖村", client: "笠豐食品有限公司", type: "Word",
+      status: "Registered", jurisdiction: "KIPO",
+      classes: "30", filing_date: "2017-08-03", registration_date: "2018-11-15",
+      goods_services: "과자류, 누가, 파인애플케이크, 베이커리제품",
+      serial_number: "KR40-2017-0089012", reg_number: "KR40-1456789"
+    },
+    {
+      mark: "SUGAR & SPICE", client: "Sugar & Spice Bakery Co., Ltd.", type: "Word",
+      status: "Registered", jurisdiction: "USPTO",
+      classes: "30", filing_date: "2018-02-14", registration_date: "2019-09-03",
+      goods_services: "Confectionery, namely nougat, pineapple cakes, sun cakes, cookies",
+      serial_number: "88/123,456", reg_number: "5,876,543"
+    },
+    {
+      mark: "糖村 SUGAR & SPICE", client: "笠豐食品有限公司", type: "Composite",
+      status: "Pending", jurisdiction: "EUIPO",
+      classes: "30, 35", filing_date: "2025-11-20", registration_date: "",
+      goods_services: "Confectionery; nougat; pineapple cakes; retail services for bakery products",
+      serial_number: "EUTM-018901234"
+    },
+    {
+      mark: "糖村法式牛軋糖", client: "笠豐食品有限公司", type: "Word",
+      status: "Unregistered", jurisdiction: "TIPO",
+      classes: "30", goods_services: "法式牛軋糖系列產品",
+      concerns: "主力產品名稱未獨立註冊，僅作為品牌延伸使用"
+    },
+    {
+      mark: "糖村太陽餅", client: "笠豐食品有限公司", type: "Word",
+      status: "Unregistered", jurisdiction: "TIPO",
+      classes: "30", goods_services: "太陽餅系列產品",
+      concerns: "經典產品名稱未獨立註冊"
+    },
+    {
+      mark: "糖村貴婦手工餅乾", client: "笠豐食品有限公司", type: "Composite",
+      status: "Unregistered", jurisdiction: "TIPO",
+      classes: "30", goods_services: "手工餅乾禮盒系列",
+      concerns: "高單價禮盒品牌未註冊，有被仿冒風險"
+    },
+    {
+      mark: "糖村 SUGAR & SPICE (電商用圖形)", client: "笠豐食品有限公司", type: "Design",
+      status: "Unregistered", jurisdiction: "TIPO",
+      classes: "30, 35", goods_services: "電商平台用品牌圖形、社群媒體用視覺識別",
+      concerns: "電商及社群平台上使用之圖形商標版本未申請註冊"
+    }
+  ],
+  actual_use_analysis: {
+    mark_variants: [
+      {
+        registered: "糖村",
+        actual_use: "糖村 SugarSpice（電商平台使用一體化英文，無空格及 & 符號）",
+        risk: "medium"
+      },
+      {
+        registered: "糖村 SUGAR & SPICE",
+        actual_use: "糖村 Sugar&Spice（簡化版本，常見於外送平台及社群媒體）",
+        risk: "low"
+      }
+    ],
+    goods_scope_comparison: {
+      registered_scope: "糕餅、牛軋糖、鳳梨酥、太陽餅、餅乾",
+      actual_scope: "糕餅、牛軋糖、鳳梨酥、太陽餅、餅乾、巧克力禮盒、冰品、飲品、輕食餐點",
+      gap_items: ["巧克力禮盒", "冰品", "飲品", "輕食餐點"],
+      gap_classes: [30, 32, 43]
+    },
+    unregistered_marks_in_use: [
+      "糖村法式牛軋糖 — 年營收主力產品，品牌辨識度極高",
+      "糖村太陽餅 — 台中伴手禮經典品項",
+      "糖村貴婦手工餅乾 — 高單價禮盒系列，目標客群為頂級消費者",
+      "電商專用圖形商標 — 蝦皮、momo、PChome 等平台使用之視覺標誌"
+    ]
+  },
+  store_locations: ["台中旗艦店", "台北微風南山", "台北101", "桃園機場", "高雄漢神", "線上電商（蝦皮/momo/官網）"],
+  awards: ["2010 台灣十大伴手禮", "多次獲選機場免稅店人氣商品"]
+};
+
+// ═══════════════════════════════════════════════
+// i18n
+// ═══════════════════════════════════════════════
+const i18n = {
+  en: {
+    headerTitle: "Senior Trademark Strategist & Portfolio Advisor",
+    headerSub: "Global Trademark Prosecution \u2022 Portfolio Management \u2022 IP Enforcement",
+    loadJSON: "Load JSON",
+    printBtn: "Print",
+    totalMarks: "Total Marks", registered: "Registered", pending: "Pending", atRisk: "At Risk",
+    jurisdictionCount: "Jurisdictions", niceClassCount: "Nice Classes",
+    overallRisk: "Overall Risk",
+    portfolioOverview: "Portfolio Overview", allMarksGlance: "All Marks at a Glance",
+    mark: "Mark", status: "Status", classes: "Class(es)", jurisdiction: "Jurisdiction", risk: "Risk",
+    coverageGaps: "Coverage Gaps & Recommendations", portfolioAnalysis: "Portfolio Analysis",
+    classCoverage: "Class Coverage", currentlyProtectedIn: "Currently protected in",
+    niceClassesWord: "Nice Classes", expansionOpp: "Expansion Opportunities",
+    considerDefensive: "Based on your current portfolio, consider defensive filings in:",
+    geoCoverage: "Geographic Coverage", activeIn: "Active in:",
+    goodGeoDiversity: "Good geographic diversification.",
+    considerMadrid: "Consider broader international protection via Madrid Protocol.",
+    maintenanceAlerts: "Maintenance Alerts",
+    maintenanceText: "require timely maintenance filings. Review deadlines immediately.",
+    useVsRegTitle: "Actual Use vs. Registration Analysis",
+    useVsRegSub: "Critical comparison of registered rights vs. actual market use",
+    markVariants: "Mark Variant Discrepancies",
+    regMark: "Registered Mark", actualUse: "Actual Use", riskLevel: "Risk Level",
+    goodsScopeMismatch: "Goods/Services Scope Mismatch",
+    regScope: "Registered Scope", actualScope: "Actual Scope",
+    gapItems: "Unprotected Items", gapClasses: "Additional Classes Needed",
+    unregInUse: "Unregistered Marks in Active Use",
+    unregWarning: "The following marks are in active commercial use but have NO registered trademark protection:",
+    filingPriority: "Filing Priority Recommendations",
+    filingPriorityText: "1. File applications for all product-line marks immediately (highest revenue risk). 2. Register the e-commerce visual identity across all active platforms. 3. Consider international filings in markets where counterfeiting risk is highest.",
+    // Detail view
+    detailTitle: "Detailed Analysis", close: "Close",
+    sop: "SOP Step",
+    sopStatusAudit: "Status Audit", sopRiskAssessment: "Risk Assessment",
+    sopExpansion: "Strategic Expansion", sopEnforcement: "Enforcement Strategy",
+    sopDocumentation: "Documentation & Deadlines",
+    currentStanding: "Current Standing", isCurrStatus: "is currently",
+    coveredClasses: "Covered Nice Classes",
+    unregWarningTitle: "Unregistered Mark Warning",
+    unregWarningText: "This mark relies solely on common-law \u2122 rights. Common-law protection is geographically limited to the area of actual use and provides no presumption of validity. Strongly recommend filing a federal application immediately.",
+    ituTitle: "ITU Filing Requirement",
+    ituText: "Intent-to-Use applications require a Statement of Use (SOU) before registration. Track this deadline carefully.",
+    pubTitle: "Opposition Period Active",
+    pubText: "The mark is published. Third parties have 30 days to file an opposition. Monitor for any oppositions filed.",
+    filingTimeline: "Filing Timeline", filedDaysAgo: "days ago",
+    examLong: "Examination is taking longer than typical (6-12 months). Consider contacting the examiner.",
+    examNormal: "Prosecution timeline appears normal.",
+    multiJuris: "Multi-Jurisdiction Coordination",
+    multiJurisText: "Ensure consistent prosecution strategy and harmonized goods/services descriptions across offices.",
+    noConflicts: "No Known Conflicts",
+    noConflictsText: "No competing marks identified. Recommend conducting a comprehensive clearance search before significant brand investment.",
+    wordMarkStrategy: "Word Mark Strategy",
+    wordMarkText: "Word marks provide the broadest protection regardless of font, color, or design.",
+    designConsideration: "Design Element Consideration",
+    designText: "Design/composite marks protect specific visual presentation. Consider filing a parallel word-only mark for broader protection.",
+    oaPreparedness: "Office Action Preparedness",
+    oaText: "Common refusals: likelihood of confusion, descriptiveness, specimen deficiencies. Response deadline typically 3 months.",
+    defensiveFiling: "Defensive Filing Recommendation",
+    defensiveText1: "Based on your current Class", defensiveText2: "filings, consider filing in",
+    defensiveText3: "as defensive positions.",
+    geoExpansion: "Geographic Expansion",
+    currentlyProtected: "Currently protected in", only: "only. Consider expanding to:",
+    madridSuggestion: "A Madrid Protocol filing through WIPO is the most cost-effective route for multi-country protection.",
+    brandArch: "Brand Architecture",
+    brandArchText: "Evaluate whether sub-brands, product lines, or taglines warrant separate trademark filings.",
+    proactiveMonitor: "Proactive Monitoring Program",
+    proactiveText: "Establish a trademark watch service covering your key jurisdictions and classes.",
+    onlineEnforce: "Online Enforcement",
+    onlineText: "Implement digital brand protection: domain monitoring, e-commerce takedowns, social media handle protection, customs recordation.",
+    specificConcerns: "Addressing Specific Concerns",
+    action: "Action", date: "Date",
+    overdue: "OVERDUE", urgent: "URGENT", daysWord: "days",
+    sec8Decl: "Section 8 Declaration of Use (window opens)",
+    sec8Deadline: "Section 8 Deadline (cancellation if missed)",
+    sec15: "Section 15 \u2014 Incontestability",
+    sec9Opens: "Section 9 Renewal (window opens)",
+    sec9Deadline: "Section 9 Renewal Deadline",
+    specimenTitle: "Specimen of Use Requirements",
+    specimenText: "For goods (Classes 1-34): product labels, packaging, screenshots. For services (Classes 35-45): advertising, website screenshots, brochures.",
+    useItTitle: "Use It or Lose It \u2014 Evidence Preservation",
+    useItText: "Maintain ongoing records: dated sales records, marketing materials, photographs, revenue records.",
+    recordKeeping: "Record Keeping Best Practices",
+    recordKeepingText: "Maintain a centralized trademark portfolio database. Set reminders at 12, 6, and 3 months before each deadline.",
+    currentChip: "Current", suggestedChip: "Suggested",
+    phTitle: "Loading demo data...",
+    clickRow: "Click any row above to view detailed analysis for that mark.",
+    industry: "Industry", founded: "Founded", hq: "Headquarters", stores: "Store Locations",
+  },
+  zh: {
+    headerTitle: "資深商標策略師與組合管理顧問",
+    headerSub: "全球商標申請 \u2022 組合管理 \u2022 智慧財產權執法",
+    loadJSON: "載入 JSON",
+    printBtn: "列印",
+    totalMarks: "商標總數", registered: "已註冊", pending: "審查中", atRisk: "需注意",
+    jurisdictionCount: "管轄機構", niceClassCount: "尼斯分類",
+    overallRisk: "整體風險",
+    portfolioOverview: "商標組合總覽", allMarksGlance: "所有商標一覽",
+    mark: "商標", status: "狀態", classes: "類別", jurisdiction: "管轄區", risk: "風險",
+    coverageGaps: "涵蓋缺口與建議", portfolioAnalysis: "組合分析",
+    classCoverage: "類別涵蓋範圍", currentlyProtectedIn: "目前受保護的尼斯分類共",
+    niceClassesWord: "類", expansionOpp: "擴張機會",
+    considerDefensive: "根據目前組合，建議於以下類別進行防禦性申請：",
+    geoCoverage: "地理涵蓋範圍", activeIn: "活躍地區：",
+    goodGeoDiversity: "地理多元性良好。",
+    considerMadrid: "建議透過馬德里議定書擴大國際保護。",
+    maintenanceAlerts: "維護期限警示",
+    maintenanceText: "需及時辦理維護事項。請立即確認期限，以避免放棄或被撤銷。",
+    useVsRegTitle: "實際使用 vs 註冊內容分析",
+    useVsRegSub: "已註冊權利與實際市場使用之重要比對",
+    markVariants: "商標變體差異",
+    regMark: "註冊商標", actualUse: "實際使用", riskLevel: "風險等級",
+    goodsScopeMismatch: "商品/服務範圍差異",
+    regScope: "註冊範圍", actualScope: "實際使用範圍",
+    gapItems: "未受保護項目", gapClasses: "需補充之分類",
+    unregInUse: "使用中但未註冊之商標",
+    unregWarning: "以下商標正在商業使用中，但尚無任何註冊商標保護：",
+    filingPriority: "申請優先順序建議",
+    filingPriorityText: "1. 立即就所有產品線商標提出申請（營收風險最高）。2. 在所有活躍平台註冊電商視覺標識。3. 考慮在仿冒風險最高的市場進行國際申請。",
+    detailTitle: "詳細分析", close: "關閉",
+    sop: "SOP 步驟",
+    sopStatusAudit: "狀態審計", sopRiskAssessment: "風險評估",
+    sopExpansion: "策略性擴張", sopEnforcement: "執法策略",
+    sopDocumentation: "文件管理與期限",
+    currentStanding: "目前狀態", isCurrStatus: "目前為",
+    coveredClasses: "涵蓋之尼斯分類",
+    unregWarningTitle: "未註冊商標警示",
+    unregWarningText: "此商標僅依賴普通法 \u2122 權利。普通法保護僅限於實際使用之地理範圍，且不具有效力推定。強烈建議立即提出正式申請。",
+    ituTitle: "意圖使用申請要求",
+    ituText: "意圖使用（ITU）申請須提交使用聲明書(SOU)。請嚴格追蹤此期限。",
+    pubTitle: "公告異議期間中",
+    pubText: "該商標已刊載於公報。第三方有30天可提出異議。請密切監控。",
+    filingTimeline: "申請時程追蹤", filedDaysAgo: "天前提出申請",
+    examLong: "審查時間超過一般期程（通常6-12個月）。建議聯繫審查官。",
+    examNormal: "審查時程尚屬正常。",
+    multiJuris: "多管轄區協調",
+    multiJurisText: "確保各管轄區的申請策略一致，商品/服務說明協調統一。",
+    noConflicts: "未發現已知衝突",
+    noConflictsText: "目前未發現近似商標。建議在大規模品牌投資前進行完整的商標清查搜索。",
+    wordMarkStrategy: "文字商標策略",
+    wordMarkText: "文字商標提供最廣泛的保護，不受字體、顏色或設計限制。",
+    designConsideration: "圖形設計要素考量",
+    designText: "圖形/組合商標保護特定視覺呈現。建議同時申請純文字商標以取得更廣泛保護。",
+    oaPreparedness: "核駁通知因應準備",
+    oaText: "常見核駁理由：混淆誤認之虞、不具識別性、使用證據不符。答辯期限通常為3個月。",
+    defensiveFiling: "防禦性申請建議",
+    defensiveText1: "根據您目前在第", defensiveText2: "類的申請，建議在",
+    defensiveText3: "進行防禦性申請。",
+    geoExpansion: "地理擴張",
+    currentlyProtected: "目前僅在", only: "受保護。建議擴展至：",
+    madridSuggestion: "透過 WIPO 馬德里議定書提出國際申請，是最具成本效益的多國保護途徑。",
+    brandArch: "品牌架構",
+    brandArchText: "評估是否需為子品牌、產品線或標語分別申請商標。",
+    proactiveMonitor: "主動監控計畫",
+    proactiveText: "建立商標監看服務，涵蓋核心管轄區及類別。",
+    onlineEnforce: "線上執法",
+    onlineText: "實施數位品牌保護：域名監控、電商平台下架、社群媒體帳號保護、海關備案。",
+    specificConcerns: "回應特定問題",
+    action: "事項", date: "日期",
+    overdue: "已逾期", urgent: "緊急", daysWord: "天",
+    sec8Decl: "\u00a78 使用聲明書（窗口開啟）",
+    sec8Deadline: "\u00a78 聲明期限（逾期將被撤銷）",
+    sec15: "\u00a715 不可爭議性聲明",
+    sec9Opens: "\u00a79 續展（窗口開啟）",
+    sec9Deadline: "\u00a79 續展期限",
+    specimenTitle: "使用證據要求",
+    specimenText: "商品（第1-34類）：產品標籤、包裝、線上銷售截圖。服務（第35-45類）：廣告、網站截圖、型錄。",
+    useItTitle: "使用或喪失 — 證據保存",
+    useItText: "持續保存：銷售紀錄、行銷資料、照片、營收紀錄。",
+    recordKeeping: "檔案管理最佳實務",
+    recordKeepingText: "建立集中的商標組合資料庫。設定期限前12、6、3個月的自動提醒。",
+    currentChip: "已申請", suggestedChip: "建議申請",
+    phTitle: "正在載入示範資料...",
+    clickRow: "點擊表格中任一列，即可查看該商標的詳細分析。",
+    industry: "產業", founded: "成立年份", hq: "總部", stores: "門市據點",
+  }
+};
+
+// ═══════════════════════════════════════════════
+// NICE CLASSIFICATION DB
+// ═══════════════════════════════════════════════
+const NICE_DB = {
+  1:"Chemicals",2:"Paints",3:"Cosmetics & Cleaning",4:"Lubricants & Fuels",5:"Pharmaceuticals",
+  6:"Common Metals",7:"Machines",8:"Hand Tools",9:"Computers & Software",10:"Medical Devices",
+  11:"Environmental Control",12:"Vehicles",13:"Firearms",14:"Jewelry",15:"Musical Instruments",
+  16:"Paper Goods",17:"Rubber Goods",18:"Leather Goods",19:"Building Materials",20:"Furniture",
+  21:"Housewares",22:"Cordage & Fibers",23:"Yarns",24:"Fabrics",25:"Clothing",
+  26:"Fancy Goods",27:"Floor Coverings",28:"Toys & Sports",29:"Processed Foods",
+  30:"Staple Foods",31:"Agricultural Products",32:"Light Beverages",33:"Wine & Spirits",
+  34:"Smokers' Articles",35:"Advertising & Business",36:"Insurance & Financial",
+  37:"Building & Repair",38:"Telecommunications",39:"Transportation & Storage",
+  40:"Treatment of Materials",41:"Education & Entertainment",42:"Software & IT Services",
+  43:"Hotels & Restaurants",44:"Medical & Beauty Services",45:"Legal & Security Services"
+};
+const NICE_DB_ZH = {
+  1:"化學品",2:"顏料油漆",3:"化妝品清潔劑",4:"潤滑劑燃料",5:"醫藥品",
+  6:"普通金屬",7:"機械設備",8:"手工具",9:"電腦與軟體",10:"醫療器材",
+  11:"環境控制設備",12:"車輛",13:"軍火",14:"珠寶首飾",15:"樂器",
+  16:"紙製品印刷品",17:"橡膠製品",18:"皮革製品",19:"非金屬建材",20:"家具",
+  21:"家庭用品",22:"繩纜纖維",23:"紗線",24:"布料紡織品",25:"服裝",
+  26:"裝飾品",27:"地面覆蓋物",28:"玩具運動用品",29:"加工食品",
+  30:"主食",31:"農產品",32:"飲料",33:"酒類",34:"菸草用品",
+  35:"廣告與商業",36:"保險與金融",37:"建築與修繕",38:"電信",
+  39:"運輸與倉儲",40:"材料處理",41:"教育與娛樂",42:"軟體與IT服務",
+  43:"餐飲住宿",44:"醫療與美容服務",45:"法律與安全服務"
+};
+const EXPANSION_MAP = {
+  9:[42,35,38,41],42:[9,35,38,41],35:[9,42,38,41,36],36:[35,9,42,45],
+  41:[9,42,35,16],38:[9,42,35],25:[35,18,14,3],3:[35,5,44],
+  5:[3,10,44,42],10:[5,44,42],16:[35,41,9],43:[35,29,30,32,33],
+  44:[5,3,10,35],28:[41,25,35],29:[30,43,35,32],30:[29,43,35,32],
+  32:[30,29,43,33],33:[32,43,35]
+};
+const STATUS_META = {
+  "intent":     {label:"Intent-to-Use (ITU)",labelZh:"意圖使用申請 (ITU)",symbol:"\u2122",color:"pending",phase:"pre-registration"},
+  "pending":    {label:"Pending Examination",labelZh:"審查中",symbol:"\u2122",color:"pending",phase:"pre-registration"},
+  "published":  {label:"Published for Opposition",labelZh:"公告異議期間",symbol:"\u2122",color:"pending",phase:"pre-registration"},
+  "registered": {label:"Registered",labelZh:"已註冊",symbol:"\u00ae",color:"registered",phase:"active"},
+  "post-reg":   {label:"Post-Registration",labelZh:"註冊後維護",symbol:"\u00ae",color:"registered",phase:"maintenance"},
+  "renewal":    {label:"Up for Renewal",labelZh:"待續展",symbol:"\u00ae",color:"pending",phase:"maintenance"},
+  "unregistered":{label:"Unregistered",labelZh:"未註冊",symbol:"\u2122",color:"expired",phase:"unprotected"}
+};
+
+// ═══════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════
+function t(key) { return (i18n[currentLang]||i18n.en)[key] || i18n.en[key] || key; }
+function niceLabel(c) { return currentLang==='zh' ? (NICE_DB_ZH[c]||NICE_DB[c]||'?') : (NICE_DB[c]||'?'); }
+function statusLabel(meta) { return currentLang==='zh' ? meta.labelZh : meta.label; }
+function daysBetween(d1,d2) { return Math.round((d2-d1)/(1000*60*60*24)); }
+function advice(label,text,type) { return '<div class="advice-item '+(type||'')+'"><span class="label">'+label+'</span>'+text+'</div>'; }
+
+function normalizeStatus(str) {
+  const s = (str||'').toLowerCase();
+  if (s.includes('register') && !s.includes('un') && !s.includes('post')) return 'registered';
+  if (s.includes('post')||s.includes('sec')) return 'post-reg';
+  if (s.includes('intent')||s.includes('itu')||s.includes('1b')) return 'intent';
+  if (s.includes('publish')||s.includes('opposition')) return 'published';
+  if (s.includes('renew')) return 'renewal';
+  if (s.includes('unregist')||s.includes('common')) return 'unregistered';
+  if (s.includes('pending')||s.includes('exam')) return 'pending';
+  return 'pending';
+}
+
+function normalizeMarkType(str) {
+  const s = (str||'').toLowerCase();
+  if (s.includes('design')||s.includes('logo')) return 'design';
+  if (s.includes('composite')||s.includes('combo')) return 'composite';
+  if (s.includes('sound')) return 'sound';
+  return 'word';
+}
+
+function parseClasses(str) {
+  if (!str) return [];
+  return String(str).replace(/[Cc]lass\s*/g,'').split(/[,;|]/).map(c=>parseInt(c.trim())).filter(n=>!isNaN(n)&&n>=1&&n<=45);
+}
+
+function parseJurisdictions(str) {
+  if (!str) return [];
+  return String(str).split(/[,;|]/).map(j=>j.trim().toUpperCase()).filter(Boolean);
+}
+
+function normalizeMark(obj) {
+  const get = function() {
+    for (let i=0; i<arguments.length; i++) {
+      const k = arguments[i];
+      if (obj[k]) return obj[k];
+      if (obj[k.toLowerCase()]) return obj[k.toLowerCase()];
+    }
+    return '';
+  };
+  return {
+    mark: get('mark','trademark','mark_name','name','brand') || 'UNNAMED',
+    client: get('client','client_name','owner','applicant') || '',
+    markType: normalizeMarkType(get('type','mark_type')),
+    status: normalizeStatus(get('status','mark_status','current_status')),
+    jurisdictions: parseJurisdictions(get('jurisdiction','jurisdictions','office','country')),
+    classes: parseClasses(get('classes','class','nice_class','nice_classes','classification')),
+    filingDate: get('filing_date','filingdate','filed','priority_date','application_date'),
+    regDate: get('registration_date','regdate','reg_date','registered_date'),
+    goodsServices: get('goods_services','goods','services','description','goods_and_services'),
+    concerns: get('concerns','issues','notes','questions'),
+    serialNumber: get('serial_number','serial','application_number','app_no'),
+    regNumber: get('reg_number','registration_number','reg_no'),
+    expansion: get('expansion','expansion_plans','growth'),
+    competitors: get('competitors','conflicts','similar_marks'),
+  };
+}
+
+function computeRisk(m) {
+  let score = 0;
+  if (m.status==='unregistered') score += 35;
+  if (m.status==='intent') score += 15;
+  if (m.status==='renewal') score += 20;
+  if (m.status==='post-reg') score += 15;
+  if (m.status==='published') score += 10;
+  if (m.jurisdictions.length<=1) score += 5;
+  if (m.classes.length<=1) score += 5;
+  if (m.regDate) {
+    const y = (new Date()-new Date(m.regDate))/(365.25*24*3600000);
+    if (y>=4.5&&y<6) score += 15;
+    if (y>=9&&y<10) score += 20;
+  }
+  return score>=50?'HIGH':score>=25?'MEDIUM':'LOW';
+}
+
+// ═══════════════════════════════════════════════
+// CURRENT DATA STATE
+// ═══════════════════════════════════════════════
+let currentData = null;
+let normalizedMarks = [];
+
+// ═══════════════════════════════════════════════
+// LANGUAGE SWITCH
+// ═══════════════════════════════════════════════
+function setLang(lang) {
+  currentLang = lang;
+  document.getElementById('langEN').className = 'lang-btn' + (lang==='en'?' active':'');
+  document.getElementById('langZH').className = 'lang-btn' + (lang==='zh'?' active':'');
+  document.getElementById('headerTitle').textContent = t('headerTitle');
+  document.getElementById('headerSub').textContent = t('headerSub');
+  document.getElementById('loadBtnText').textContent = t('loadJSON');
+  document.getElementById('printBtnText').textContent = t('printBtn');
+  if (currentData) renderAll(currentData);
+}
+
+// ═══════════════════════════════════════════════
+// JSON FILE UPLOAD
+// ═══════════════════════════════════════════════
+function handleJSONUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      loadPortfolio(data);
+    } catch(err) { alert('JSON parse error: '+err.message); }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function loadPortfolio(data) {
+  currentData = data;
+  let marks = [];
+  if (data.marks) marks = data.marks;
+  else if (data.portfolio) marks = data.portfolio;
+  else if (data.trademarks) marks = data.trademarks;
+  else if (Array.isArray(data)) marks = data;
+  else marks = [data];
+  normalizedMarks = marks.map(normalizeMark);
+  renderAll(data);
+}
+
+// ═══════════════════════════════════════════════
+// MAIN RENDER
+// ═══════════════════════════════════════════════
+function renderAll(data) {
+  const app = document.getElementById('app');
+  const clientBar = document.getElementById('clientBar');
+  app.innerHTML = '';
+
+  // Client info bar
+  if (data.client_info) {
+    const ci = data.client_info;
+    const isZh = currentLang === 'zh';
+    let barHTML = '<div class="client-name">'+(isZh?(ci.name_zh||ci.name_en||''):(ci.name_en||ci.name_zh||''))+'</div>';
+    const meta = [];
+    if (ci.industry_zh||ci.industry_en) meta.push('<span class="tag">'+(isZh?ci.industry_zh:ci.industry_en)+'</span>');
+    if (ci.founded) meta.push('<span class="client-meta">'+t('founded')+': '+ci.founded+'</span>');
+    if (ci.headquarters_zh||ci.headquarters_en) meta.push('<span class="client-meta">'+t('hq')+': '+(isZh?ci.headquarters_zh:ci.headquarters_en)+'</span>');
+    barHTML += meta.join(' ');
+    if (data.store_locations) barHTML += ' <span class="client-meta">'+t('stores')+': '+data.store_locations.length+'</span>';
+    clientBar.innerHTML = barHTML;
+    clientBar.style.display = 'flex';
+  } else {
+    clientBar.style.display = 'none';
+  }
+
+  // Summary dashboard
+  const registered = normalizedMarks.filter(m=>m.status==='registered'||m.status==='post-reg').length;
+  const pending = normalizedMarks.filter(m=>m.status==='pending'||m.status==='intent'||m.status==='published').length;
+  const atRisk = normalizedMarks.filter(m=>m.status==='renewal'||m.status==='unregistered').length;
+  const allClasses = [...new Set(normalizedMarks.flatMap(m=>m.classes))].sort((a,b)=>a-b);
+  const allJuris = [...new Set(normalizedMarks.flatMap(m=>m.jurisdictions))];
+
+  app.innerHTML += '<div class="summary-bar">' +
+    '<div class="summary-stat"><div class="val">'+normalizedMarks.length+'</div><div class="desc">'+t('totalMarks')+'</div></div>' +
+    '<div class="summary-stat"><div class="val risk-val-low">'+registered+'</div><div class="desc">'+t('registered')+' \u00ae</div></div>' +
+    '<div class="summary-stat"><div class="val risk-val-medium">'+pending+'</div><div class="desc">'+t('pending')+' \u2122</div></div>' +
+    '<div class="summary-stat"><div class="val risk-val-high">'+atRisk+'</div><div class="desc">'+t('atRisk')+'</div></div>' +
+    '<div class="summary-stat"><div class="val">'+allJuris.length+'</div><div class="desc">'+t('jurisdictionCount')+'</div></div>' +
+    '<div class="summary-stat"><div class="val">'+allClasses.length+'</div><div class="desc">'+t('niceClassCount')+'</div></div>' +
+  '</div>';
+
+  // Portfolio table
+  app.innerHTML += renderPortfolioTable();
+
+  // USE VS REG ANALYSIS — the highlight section
+  if (data.actual_use_analysis) {
+    app.innerHTML += renderUseVsReg(data.actual_use_analysis);
+  }
+
+  // Coverage gap analysis
+  app.innerHTML += renderGapAnalysis(allClasses, allJuris);
+}
+
+// ═══════════════════════════════════════════════
+// PORTFOLIO TABLE
+// ═══════════════════════════════════════════════
+function renderPortfolioTable() {
+  let html = '<div class="report-section">' +
+    '<div class="section-header" onclick="toggleSection(this)">' +
+    '<div class="section-icon" style="background:rgba(14,165,233,0.1)">\u{1F4BC}</div>' +
+    '<div><span class="step-num">'+t('portfolioOverview')+'</span><h3>'+t('allMarksGlance')+'</h3></div></div>' +
+    '<div class="section-body"><table class="data-table"><thead><tr>' +
+    '<th>#</th><th>'+t('mark')+'</th><th>'+t('status')+'</th><th>'+t('classes')+'</th><th>'+t('jurisdiction')+'</th><th>'+t('risk')+'</th></tr></thead><tbody>';
+
+  normalizedMarks.forEach(function(m, i) {
+    const meta = STATUS_META[m.status] || STATUS_META['pending'];
+    const risk = computeRisk(m);
+    html += '<tr onclick="showMarkDetail('+i+')">' +
+      '<td>'+(i+1)+'</td>' +
+      '<td><strong>'+m.mark+'</strong> '+meta.symbol+'</td>' +
+      '<td><span class="status-dot '+meta.color+'"></span>'+statusLabel(meta)+'</td>' +
+      '<td>'+(m.classes.join(', ')||'\u2014')+'</td>' +
+      '<td>'+m.jurisdictions.join(', ')+'</td>' +
+      '<td><span class="risk-badge risk-'+risk.toLowerCase()+'">'+risk+'</span></td></tr>';
+  });
+
+  html += '</tbody></table>' +
+    '<div class="advice-item" style="margin-top:12px;text-align:center;color:var(--text-muted);font-size:13px;">'+t('clickRow')+'</div>' +
+    '</div></div>';
+  return html;
+}
+
+// ═══════════════════════════════════════════════
+// USE VS REGISTRATION ANALYSIS
+// ═══════════════════════════════════════════════
+function renderUseVsReg(analysis) {
+  let html = '<div class="report-section">' +
+    '<div class="section-header" onclick="toggleSection(this)" style="border-left:4px solid var(--orange)">' +
+    '<div class="section-icon" style="background:rgba(249,115,22,0.15)">\u26a0</div>' +
+    '<div><span class="step-num" style="color:var(--orange)">ALERT</span><h3>'+t('useVsRegTitle')+'</h3></div></div>' +
+    '<div class="section-body">';
+
+  // Mark variants
+  if (analysis.mark_variants && analysis.mark_variants.length) {
+    html += '<div class="advice-item danger"><span class="label">'+t('markVariants')+'</span>';
+    analysis.mark_variants.forEach(function(v) {
+      const riskColor = v.risk==='high'?'var(--red)':v.risk==='medium'?'var(--orange)':'var(--green)';
+      html += '<div class="use-vs-reg-card">' +
+        '<div class="comparison-row">' +
+        '<div class="comparison-col"><div class="col-label">'+t('regMark')+'</div><strong>'+v.registered+'</strong></div>' +
+        '<div class="comparison-col"><div class="col-label">'+t('actualUse')+'</div><strong>'+v.actual_use+'</strong></div>' +
+        '</div>' +
+        '<div style="text-align:right;font-size:12px;"><span style="color:'+riskColor+';font-weight:700;">'+t('riskLevel')+': '+v.risk.toUpperCase()+'</span></div></div>';
+    });
+    const isZh = currentLang==='zh';
+    html += '<div style="margin-top:8px;font-size:13px;color:var(--text-muted);">'+(isZh
+      ? '\u26a0 \u5546\u6a19\u8b8a\u9ad4\u8207\u8a3b\u518a\u5546\u6a19\u4e4b\u9593\u7684\u5dee\u7570\u53ef\u80fd\u5c0e\u81f4\u4f7f\u7528\u8b49\u64da\u4e0d\u88ab\u63a5\u53d7\u3001\u653e\u68c4\u98a8\u96aa\u6216\u4fdd\u8b77\u7bc4\u570d\u7e2e\u9650\u3002\u5efa\u8b70\u5c31\u5be6\u969b\u4f7f\u7528\u4e4b\u7248\u672c\u63d0\u51fa\u65b0\u7684\u5546\u6a19\u7533\u8acb\u3002'
+      : '\u26a0 Discrepancies between mark variants and registrations may result in specimen rejection, abandonment risk, or narrowed protection. Recommend filing new applications for the versions actually in use.')+'</div>';
+    html += '</div>';
+  }
+
+  // Goods scope mismatch
+  if (analysis.goods_scope_comparison) {
+    const gsc = analysis.goods_scope_comparison;
+    html += '<div class="advice-item warning"><span class="label">'+t('goodsScopeMismatch')+'</span>' +
+      '<div class="comparison-row">' +
+      '<div class="comparison-col"><div class="col-label">'+t('regScope')+'</div>'+gsc.registered_scope+'</div>' +
+      '<div class="comparison-col"><div class="col-label">'+t('actualScope')+'</div>'+gsc.actual_scope+'</div></div>';
+    if (gsc.gap_items && gsc.gap_items.length) {
+      html += '<div style="margin-top:8px;"><strong style="color:var(--red);">'+t('gapItems')+':</strong> '+gsc.gap_items.join('\u3001')+'</div>';
+    }
+    if (gsc.gap_classes && gsc.gap_classes.length) {
+      html += '<div style="margin-top:4px;"><strong style="color:var(--orange);">'+t('gapClasses')+':</strong> '+gsc.gap_classes.map(function(c){return 'Class '+c+' ('+niceLabel(c)+')';}).join(', ')+'</div>';
+    }
+    html += '</div>';
+  }
+
+  // Unregistered marks in use
+  if (analysis.unregistered_marks_in_use && analysis.unregistered_marks_in_use.length) {
+    html += '<div class="advice-item danger"><span class="label">'+t('unregInUse')+'</span>' +
+      '<p style="margin-bottom:8px;">'+t('unregWarning')+'</p>';
+    analysis.unregistered_marks_in_use.forEach(function(m,i) {
+      html += '<div style="padding:8px 12px;background:rgba(239,68,68,0.05);border-radius:6px;margin-bottom:4px;border-left:3px solid var(--red);font-size:13px;">'+(i+1)+'. '+m+'</div>';
+    });
+    html += '</div>';
+
+    // Filing priority
+    html += '<div class="advice-item warning"><span class="label">'+t('filingPriority')+'</span>'+t('filingPriorityText')+'</div>';
+  }
+
+  html += '</div></div>';
+  return html;
+}
+
+// ═══════════════════════════════════════════════
+// GAP ANALYSIS
+// ═══════════════════════════════════════════════
+function renderGapAnalysis(allClasses, allJuris) {
+  const suggestedClasses = new Set();
+  allClasses.forEach(function(c) { (EXPANSION_MAP[c]||[]).forEach(function(s) { if (allClasses.indexOf(s)===-1) suggestedClasses.add(s); }); });
+
+  let html = '<div class="report-section">' +
+    '<div class="section-header" onclick="toggleSection(this)">' +
+    '<div class="section-icon" style="background:rgba(245,158,11,0.1)">\u{1F50D}</div>' +
+    '<div><span class="step-num">'+t('portfolioAnalysis')+'</span><h3>'+t('coverageGaps')+'</h3></div></div>' +
+    '<div class="section-body">';
+
+  // Class coverage with chips
+  html += '<div class="advice-item"><span class="label">'+t('classCoverage')+'</span>' +
+    '<div class="nice-class-grid" style="margin-top:8px;">';
+  allClasses.forEach(function(c) {
+    html += '<div class="nice-chip current"><span class="chip-label">'+t('currentChip')+' \u2713</span>Class '+c+': '+niceLabel(c)+'</div>';
+  });
+  Array.from(suggestedClasses).slice(0,8).forEach(function(c) {
+    html += '<div class="nice-chip suggested"><span class="chip-label">'+t('suggestedChip')+' \u2605</span>Class '+c+': '+niceLabel(c)+'</div>';
+  });
+  html += '</div></div>';
+
+  if (suggestedClasses.size > 0) {
+    html += '<div class="advice-item warning"><span class="label">'+t('expansionOpp')+'</span>' +
+      t('considerDefensive')+' '+Array.from(suggestedClasses).slice(0,10).map(function(c){return '<strong>Class '+c+' ('+niceLabel(c)+')</strong>';}).join(', ')+'.</div>';
+  }
+
+  html += '<div class="advice-item"><span class="label">'+t('geoCoverage')+'</span>'+t('activeIn')+' '+allJuris.join(', ')+'. '+(allJuris.length<3?'<span style="color:var(--orange)">'+t('considerMadrid')+'</span>':t('goodGeoDiversity'))+'</div>';
+
+  // Maintenance alerts
+  var urgentMarks = normalizedMarks.filter(function(m){return m.status==='renewal'||m.status==='post-reg';});
+  if (urgentMarks.length > 0) {
+    html += '<div class="advice-item danger"><span class="label">'+t('maintenanceAlerts')+'</span>'+urgentMarks.map(function(m){return '<strong>'+m.mark+'</strong> ('+statusLabel(STATUS_META[m.status])+')';}).join(', ')+' \u2014 '+t('maintenanceText')+'</div>';
+  }
+
+  html += '</div></div>';
+  return html;
+}
+
+// ═══════════════════════════════════════════════
+// MARK DETAIL OVERLAY
+// ═══════════════════════════════════════════════
+function showMarkDetail(idx) {
+  const m = normalizedMarks[idx];
+  if (!m) return;
+  const meta = STATUS_META[m.status] || STATUS_META['pending'];
+  const risk = computeRisk(m);
+  const now = new Date();
+
+  let overlay = document.createElement('div');
+  overlay.className = 'mark-detail-overlay';
+  overlay.onclick = function(e) { if (e.target===overlay) overlay.remove(); };
+
+  let html = '<div class="mark-detail-panel">' +
+    '<div class="mark-detail-header">' +
+    '<div style="flex:1"><h2>'+m.mark+' '+meta.symbol+' <span class="risk-badge risk-'+risk.toLowerCase()+'" style="margin-left:8px;font-size:11px;">'+risk+'</span></h2>' +
+    '<div style="font-size:12px;color:#94a3b8;margin-top:2px;">'+m.jurisdictions.join(', ')+' \u2022 '+(m.classes.length?m.classes.map(function(c){return 'Class '+c;}).join(', '):'—')+'</div></div>' +
+    '<button class="close-btn" onclick="this.closest(\'.mark-detail-overlay\').remove()">\u2715</button></div>' +
+    '<div class="mark-detail-body">';
+
+  // SOP 1: Status Audit
+  html += buildDetailSection(1, '\u{1F50D}', t('sopStatusAudit'), 'rgba(14,165,233,0.1)', buildStatusAudit(m, meta, now));
+  // SOP 2: Risk Assessment
+  html += buildDetailSection(2, '\u26a0', t('sopRiskAssessment'), 'rgba(249,115,22,0.1)', buildRiskAssessment(m));
+  // SOP 3: Expansion
+  html += buildDetailSection(3, '\u{1F680}', t('sopExpansion'), 'rgba(245,158,11,0.1)', buildExpansion(m));
+  // SOP 4: Enforcement
+  html += buildDetailSection(4, '\u2697', t('sopEnforcement'), 'rgba(239,68,68,0.1)', buildEnforcement(m));
+  // SOP 5: Documentation
+  html += buildDetailSection(5, '\u{1F4C4}', t('sopDocumentation'), 'rgba(16,185,129,0.1)', buildDocumentation(m, meta, now));
+
+  html += '</div></div>';
+  overlay.innerHTML = html;
+  document.body.appendChild(overlay);
+}
+
+function buildDetailSection(num, icon, title, bgColor, body) {
+  return '<div class="report-section" style="margin-bottom:16px;">' +
+    '<div class="section-header" onclick="toggleSection(this)">' +
+    '<div class="section-icon" style="background:'+bgColor+'">'+icon+'</div>' +
+    '<div><span class="step-num">'+t('sop')+' '+num+'</span><h3>'+title+'</h3></div></div>' +
+    '<div class="section-body">'+body+'</div></div>';
+}
+
+function buildStatusAudit(m, meta, now) {
+  let items = '';
+  items += advice(t('currentStanding'),
+    '<strong>'+m.mark+'</strong> '+meta.symbol+' '+t('isCurrStatus')+' <strong>'+statusLabel(meta)+'</strong> \u2014 '+m.jurisdictions.join(', ')+'.' +
+    (m.classes.length ? ' '+t('coveredClasses')+': '+m.classes.map(function(c){return 'Class '+c+' ('+niceLabel(c)+')';}).join(', ')+'.' : '') +
+    (m.goodsServices ? '<br>'+m.goodsServices : ''));
+
+  if (meta.phase==='unprotected') items += advice(t('unregWarningTitle'), t('unregWarningText'), 'danger');
+  if (m.status==='intent') items += advice(t('ituTitle'), t('ituText'), 'warning');
+  if (m.status==='published') items += advice(t('pubTitle'), t('pubText'), 'warning');
+  if (m.filingDate) {
+    var days = daysBetween(new Date(m.filingDate), now);
+    items += advice(t('filingTimeline'), days+' '+t('filedDaysAgo')+' ('+m.filingDate+'). '+(m.status==='pending'&&days>365?t('examLong'):t('examNormal')),
+      m.status==='pending'&&days>365?'warning':'');
+  }
+  if (m.jurisdictions.length>1) items += advice(t('multiJuris'), t('multiJurisText'));
+  return items;
+}
+
+function buildRiskAssessment(m) {
+  let items = '';
+  items += advice(t('noConflicts'), t('noConflictsText'), 'success');
+  if (m.markType==='word') items += advice(t('wordMarkStrategy'), t('wordMarkText'));
+  if (m.markType==='design'||m.markType==='composite') items += advice(t('designConsideration'), t('designText'));
+  if (m.status==='pending'||m.status==='intent') items += advice(t('oaPreparedness'), t('oaText'), 'warning');
+  return items;
+}
+
+function buildExpansion(m) {
+  let items = '';
+  var suggested = new Set();
+  m.classes.forEach(function(c) { (EXPANSION_MAP[c]||[]).forEach(function(s) { if (m.classes.indexOf(s)===-1) suggested.add(s); }); });
+
+  if (m.classes.length > 0) {
+    var grid = '<div class="nice-class-grid">';
+    m.classes.forEach(function(c) { grid += '<div class="nice-chip current"><span class="chip-label">'+t('currentChip')+' \u2713</span>Class '+c+': '+niceLabel(c)+'</div>'; });
+    Array.from(suggested).slice(0,6).forEach(function(c) { grid += '<div class="nice-chip suggested"><span class="chip-label">'+t('suggestedChip')+' \u2605</span>Class '+c+': '+niceLabel(c)+'</div>'; });
+    grid += '</div>';
+    items += '<div class="advice-item">'+grid+'</div>';
+  }
+  if (suggested.size>0) {
+    items += advice(t('defensiveFiling'), t('defensiveText1')+' '+m.classes.join(', ')+' '+t('defensiveText2')+' <strong>Classes '+Array.from(suggested).slice(0,6).join(', ')+'</strong> '+t('defensiveText3'));
+  }
+
+  var missing = ['USPTO','EUIPO','WIPO','CNIPA','JPO'].filter(function(j){return m.jurisdictions.indexOf(j)===-1;});
+  if (missing.length>0 && m.jurisdictions.length<4) {
+    items += advice(t('geoExpansion'), t('currentlyProtected')+' '+m.jurisdictions.join(', ')+' '+t('only')+' <strong>'+missing.slice(0,3).join(', ')+'</strong>. '+t('madridSuggestion'), 'warning');
+  }
+  items += advice(t('brandArch'), t('brandArchText'));
+  return items;
+}
+
+function buildEnforcement(m) {
+  let items = '';
+  items += advice(t('proactiveMonitor'), t('proactiveText'), 'success');
+  items += advice(t('onlineEnforce'), t('onlineText'));
+  if (m.concerns) items += advice(t('specificConcerns'), m.concerns, 'warning');
+  return items;
+}
+
+function buildDocumentation(m, meta, now) {
+  let items = '';
+  if (m.regDate) {
+    var reg = new Date(m.regDate);
+    var deadlines = [
+      {action:t('sec8Decl'), date:new Date(reg.getFullYear()+5, reg.getMonth(), reg.getDate())},
+      {action:t('sec8Deadline'), date:new Date(reg.getFullYear()+6, reg.getMonth(), reg.getDate())},
+      {action:t('sec15'), date:new Date(reg.getFullYear()+5, reg.getMonth(), reg.getDate())},
+      {action:t('sec9Opens'), date:new Date(reg.getFullYear()+9, reg.getMonth(), reg.getDate())},
+      {action:t('sec9Deadline'), date:new Date(reg.getFullYear()+10, reg.getMonth(), reg.getDate())}
+    ];
+    var tableHTML = '<table class="data-table"><tr><th>'+t('action')+'</th><th>'+t('date')+'</th><th>'+t('status')+'</th></tr>';
+    deadlines.forEach(function(d) {
+      var isPast = d.date <= now;
+      var daysUntil = daysBetween(now, d.date);
+      var urgency = isPast ? '<span style="color:var(--red)">'+t('overdue')+'</span>' :
+                    daysUntil<180 ? '<span style="color:var(--orange)">'+daysUntil+' '+t('daysWord')+' \u2014 '+t('urgent')+'</span>' :
+                    daysUntil+' '+t('daysWord');
+      tableHTML += '<tr><td>'+d.action+'</td><td>'+d.date.toISOString().split('T')[0]+'</td><td>'+urgency+'</td></tr>';
+    });
+    tableHTML += '</table>';
+    items += '<div class="advice-item">'+tableHTML+'</div>';
+  }
+  items += advice(t('specimenTitle'), t('specimenText'));
+  if (m.status==='registered'||m.status==='post-reg') items += advice(t('useItTitle'), t('useItText'), 'warning');
+  items += advice(t('recordKeeping'), t('recordKeepingText'));
+  return items;
+}
+
+// ═══════════════════════════════════════════════
+// SECTION TOGGLE
+// ═══════════════════════════════════════════════
+function toggleSection(header) {
+  var body = header.nextElementSibling;
+  body.style.display = body.style.display==='none' ? 'block' : 'none';
+}
+
+// ═══════════════════════════════════════════════
+// INIT — load demo data on page ready
+// ═══════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(function() { loadPortfolio(DEMO_DATA); }, 300);
+});
+</script>
+</body>
+</html>
