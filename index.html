@@ -848,6 +848,15 @@ function advice(label,text,type) { return '<div class="advice-item '+(type||'')+
 
 function normalizeStatus(str) {
   const s = (str||'').toLowerCase();
+  // Chinese status matching (check before English to handle mixed inputs)
+  if (s.includes('未註冊') || s.includes('未注册')) return 'unregistered';
+  if (s.includes('已註冊') || s.includes('已注册') || s.includes('註冊') && !s.includes('未') && !s.includes('後') && !s.includes('后')) return 'registered';
+  if (s.includes('註冊後') || s.includes('注册后') || s.includes('維護') || s.includes('维护')) return 'post-reg';
+  if (s.includes('意圖使用') || s.includes('意图使用')) return 'intent';
+  if (s.includes('公告') || s.includes('異議') || s.includes('异议')) return 'published';
+  if (s.includes('續展') || s.includes('续展') || s.includes('待續') || s.includes('待续')) return 'renewal';
+  if (s.includes('審查') || s.includes('审查') || s.includes('待審') || s.includes('待审') || s.includes('申請中') || s.includes('申请中')) return 'pending';
+  // English status matching
   if (s.includes('register') && !s.includes('un') && !s.includes('post')) return 'registered';
   if (s.includes('post')||s.includes('sec')) return 'post-reg';
   if (s.includes('intent')||s.includes('itu')||s.includes('1b')) return 'intent';
@@ -1113,12 +1122,13 @@ function parseExcelToPortfolio(arrayBuffer, filename) {
       if (!v) return;
 
       // Map known column names to standard fields
-      if (matchCol(k, ['mark','trademark','商標','商標名稱','brand','mark_name','name'])) obj.mark = v;
+      // IMPORTANT: check mark LAST because '商標' is a substring of many Chinese column names
+      // (e.g. '商標狀態', '商標類別', '商標類型') — checking it first would hijack those fields
+      if (matchCol(k, ['status','mark_status','current_status','狀態','註冊狀態','商標狀態'])) obj.status = v;
       else if (matchCol(k, ['client','owner','applicant','client_name','申請人','權利人','客戶'])) obj.client = v;
       else if (matchCol(k, ['type','mark_type','類型','商標類型'])) obj.type = v;
-      else if (matchCol(k, ['status','mark_status','current_status','狀態','註冊狀態'])) obj.status = v;
       else if (matchCol(k, ['jurisdiction','jurisdictions','office','country','管轄','管轄區','國家','地區'])) obj.jurisdiction = v;
-      else if (matchCol(k, ['class','classes','nice_class','nice_classes','classification','類別','尼斯分類'])) obj.classes = v;
+      else if (matchCol(k, ['class','classes','nice_class','nice_classes','classification','類別','尼斯分類','商標類別'])) obj.classes = v;
       else if (matchCol(k, ['filing_date','filingdate','filed','application_date','priority_date','申請日','申請日期'])) obj.filing_date = formatExcelDate(row[key]);
       else if (matchCol(k, ['registration_date','regdate','reg_date','registered_date','註冊日','註冊日期'])) obj.registration_date = formatExcelDate(row[key]);
       else if (matchCol(k, ['goods_services','goods','services','description','goods_and_services','商品','服務','商品服務'])) obj.goods_services = v;
@@ -1127,6 +1137,7 @@ function parseExcelToPortfolio(arrayBuffer, filename) {
       else if (matchCol(k, ['concerns','issues','notes','questions','備註','問題','注意事項'])) obj.concerns = v;
       else if (matchCol(k, ['expansion','expansion_plans','growth','擴張','擴展計畫'])) obj.expansion = v;
       else if (matchCol(k, ['competitors','conflicts','similar_marks','競爭者','衝突','近似商標'])) obj.competitors = v;
+      else if (matchCol(k, ['mark','trademark','商標','商標名稱','brand','mark_name','name'])) obj.mark = v;
     });
     return obj;
   }).filter(function(m) { return m.mark; }); // Only include rows that have a mark name
@@ -1195,12 +1206,13 @@ function parseExcelToUsage(arrayBuffer, filename) {
             var k = key.toLowerCase().trim();
             var v = String(row[key]).trim();
             if (!v) return;
-            if (matchCol(k, ['mark','trademark','商標','名稱'])) obj.mark = v;
-            else if (matchCol(k, ['status','狀態'])) obj.status = v;
+            // Check mark LAST to avoid '商標' substring matching other fields
+            if (matchCol(k, ['status','狀態','商標狀態'])) obj.status = v;
             else if (matchCol(k, ['jurisdiction','管轄區'])) obj.jurisdiction = v;
-            else if (matchCol(k, ['class','classes','類別'])) obj.classes = v;
+            else if (matchCol(k, ['class','classes','類別','商標類別'])) obj.classes = v;
             else if (matchCol(k, ['goods_services','goods','商品服務'])) obj.goods_services = v;
             else if (matchCol(k, ['concerns','notes','備註'])) obj.concerns = v;
+            else if (matchCol(k, ['mark','trademark','商標','名稱'])) obj.mark = v;
           });
           return obj;
         }).filter(function(m) { return m.mark; });
