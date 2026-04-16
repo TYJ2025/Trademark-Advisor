@@ -272,12 +272,134 @@
     .summary-bar { grid-template-columns: repeat(3, 1fr); }
   }
   @media print {
-    .header, .fab, .load-btn { display: none !important; }
+    .header, .fab, .load-btn, .new-analysis-btn { display: none !important; }
     .report-section { break-inside: avoid; }
     .mark-detail-overlay { position: static; background: none; padding: 0; }
     .mark-detail-panel { box-shadow: none; max-height: none; }
   }
+
+  /* ── UPLOAD LANDING ── */
+  .upload-landing { max-width: 900px; margin: 48px auto; padding: 0 24px; }
+  .upload-landing-title {
+    text-align: center; font-size: 28px; font-weight: 700;
+    color: var(--navy); margin-bottom: 8px;
+  }
+  .upload-landing-sub {
+    text-align: center; font-size: 15px; color: var(--text-muted);
+    margin-bottom: 40px; line-height: 1.7;
+  }
+  .upload-zones {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px;
+  }
+  .upload-zone {
+    background: var(--card); border: 2px dashed var(--border); border-radius: 16px;
+    padding: 40px 24px; text-align: center; cursor: pointer;
+    transition: all 0.3s ease; position: relative; overflow: hidden;
+  }
+  .upload-zone:hover {
+    border-color: var(--teal); background: rgba(14,165,233,0.02);
+    transform: translateY(-2px); box-shadow: 0 8px 24px rgba(14,165,233,0.1);
+  }
+  .upload-zone.drag-over {
+    border-color: var(--teal); background: rgba(14,165,233,0.06);
+  }
+  .upload-zone.uploaded {
+    border-color: var(--green); border-style: solid; background: rgba(16,185,129,0.04);
+  }
+  .upload-zone.uploaded:hover {
+    border-color: var(--green); box-shadow: 0 8px 24px rgba(16,185,129,0.1);
+  }
+  .upload-zone-icon { font-size: 48px; margin-bottom: 16px; display: block; }
+  .upload-zone-title { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+  .upload-zone-desc { font-size: 13px; color: var(--text-muted); line-height: 1.7; margin-bottom: 20px; }
+  .upload-zone-action {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 24px; border-radius: 10px; font-size: 14px; font-weight: 600;
+    border: none; cursor: pointer; transition: all 0.2s;
+  }
+  .upload-zone-action.primary {
+    background: var(--accent-gradient); color: #fff;
+    box-shadow: 0 4px 12px rgba(14,165,233,0.25);
+  }
+  .upload-zone-action.secondary {
+    background: var(--input-bg); color: var(--text); border: 1px solid var(--border);
+  }
+  .upload-zone-action:hover { transform: translateY(-1px); }
+  .upload-zone input[type="file"] { display: none; }
+  .upload-zone .check-badge {
+    position: absolute; top: 16px; right: 16px;
+    width: 32px; height: 32px; background: var(--green); color: #fff;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; box-shadow: 0 2px 8px rgba(16,185,129,0.3);
+  }
+  .upload-zone .file-name {
+    margin-top: 12px; font-size: 12px; color: var(--green); font-weight: 600;
+  }
+  .upload-divider {
+    text-align: center; color: var(--text-muted); font-size: 13px;
+    margin: 24px 0; position: relative;
+  }
+  .upload-divider::before, .upload-divider::after {
+    content: ''; position: absolute; top: 50%; width: 38%; height: 1px; background: var(--border);
+  }
+  .upload-divider::before { left: 0; }
+  .upload-divider::after { right: 0; }
+  .demo-load-btn {
+    display: flex; align-items: center; gap: 8px; margin: 0 auto;
+    padding: 12px 28px; background: var(--input-bg); border: 1px solid var(--border);
+    border-radius: 10px; font-size: 14px; font-weight: 600; color: var(--text);
+    cursor: pointer; transition: all 0.2s;
+  }
+  .demo-load-btn:hover { background: var(--border); }
+  .generate-btn-wrap { text-align: center; margin-top: 28px; }
+  .generate-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 40px; background: var(--accent-gradient); color: #fff;
+    border: none; border-radius: 12px; font-size: 16px; font-weight: 700;
+    cursor: pointer; box-shadow: 0 6px 20px rgba(14,165,233,0.3); transition: all 0.2s;
+  }
+  .generate-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(14,165,233,0.4); }
+  .generate-btn:disabled {
+    opacity: 0.5; cursor: not-allowed; transform: none;
+    box-shadow: 0 2px 8px rgba(14,165,233,0.15);
+  }
+
+  /* ── AUTO-SEARCH BAR ── */
+  .auto-search-bar {
+    background: linear-gradient(135deg, rgba(14,165,233,0.06), rgba(99,102,241,0.06));
+    border: 1px solid rgba(14,165,233,0.2); border-radius: 12px;
+    padding: 16px 20px; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 14px; animation: fadeSlideIn 0.4s ease;
+  }
+  .auto-search-spinner {
+    width: 22px; height: 22px; border: 3px solid rgba(14,165,233,0.2);
+    border-top-color: var(--teal); border-radius: 50%;
+    animation: spin 0.8s linear infinite; flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .auto-search-bar .search-text { font-size: 14px; color: var(--teal); font-weight: 600; flex: 1; }
+  .auto-search-bar .search-detail { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .auto-search-bar.complete {
+    background: linear-gradient(135deg, rgba(16,185,129,0.06), rgba(14,165,233,0.06));
+    border-color: rgba(16,185,129,0.3);
+  }
+  .auto-search-bar.complete .search-text { color: var(--green); }
+
+  /* ── NEW ANALYSIS BUTTON (header) ── */
+  .new-analysis-btn {
+    padding: 7px 16px; background: rgba(14,165,233,0.2); border: 1px solid rgba(14,165,233,0.4);
+    border-radius: 8px; color: #38bdf8; font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+    white-space: nowrap;
+  }
+  .new-analysis-btn:hover { background: rgba(14,165,233,0.3); }
+
+  @media (max-width: 768px) {
+    .upload-zones { grid-template-columns: 1fr; }
+    .upload-landing-title { font-size: 22px; }
+  }
 </style>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -292,10 +414,9 @@
       <button class="lang-btn" id="langEN" onclick="setLang('en')">EN</button>
       <button class="lang-btn active" id="langZH" onclick="setLang('zh')">中文</button>
     </div>
-    <label class="load-btn">
-      <input type="file" accept=".json" onchange="handleJSONUpload(event)">
-      &#128194; <span id="loadBtnText">載入 JSON</span>
-    </label>
+    <button class="new-analysis-btn" id="newAnalysisBtn" style="display:none;" onclick="showUploadLanding()">
+      &#128194; <span id="newAnalysisBtnText">新分析</span>
+    </button>
     <button class="fab" style="position:static; box-shadow:none; padding:7px 16px; font-size:12px;" onclick="window.print()">
       &#128438; <span id="printBtnText">列印</span>
     </button>
@@ -303,12 +424,7 @@
 </div>
 
 <div class="client-bar" id="clientBar" style="display:none;"></div>
-<div class="main" id="app">
-  <div class="placeholder-msg" id="placeholder">
-    <div class="icon">&#9878;</div>
-    <strong id="phTitle">正在載入示範資料...</strong>
-  </div>
-</div>
+<div class="main" id="app"></div>
 
 <script>
 // ═══════════════════════════════════════════════
@@ -534,6 +650,31 @@ const i18n = {
     phTitle: "Loading demo data...",
     clickRow: "Click any row above to view detailed analysis for that mark.",
     industry: "Industry", founded: "Founded", hq: "Headquarters", stores: "Store Locations",
+    // Upload landing
+    newAnalysis: "New Analysis",
+    uploadLandingTitle: "Upload Trademark Data to Begin Analysis",
+    uploadLandingSub: "Upload trademark registration information and usage data separately. The system will automatically search for online usage patterns and generate a comprehensive report.",
+    regInfoTitle: "Trademark Registration Info",
+    regInfoDesc: "Upload a JSON or Excel (.xlsx) file containing trademark names, registration numbers, classes, jurisdictions, and other registration details.",
+    regInfoBtn: "Select File",
+    usageInfoTitle: "Trademark Usage Info",
+    usageInfoDesc: "Upload a JSON or Excel (.xlsx) file with actual usage data (optional — the system can auto-search for usage information).",
+    usageInfoBtn: "Select File (Optional)",
+    orText: "or",
+    loadDemoBtn: "View Demo Data (Sugar & Spice)",
+    generateReport: "Generate Report",
+    regUploaded: "Registration data loaded",
+    usageUploaded: "Usage data loaded",
+    autoSearching: "Searching online for trademark usage...",
+    autoSearchStep1: "Scanning trademark databases...",
+    autoSearchStep2: "Analyzing e-commerce platforms...",
+    autoSearchStep3: "Checking social media presence...",
+    autoSearchStep4: "Comparing registered vs. actual use...",
+    autoSearchComplete: "Online search complete — usage analysis generated",
+    autoSearchSectionTitle: "Auto-Generated Online Usage Analysis",
+    autoSearchSectionSub: "Based on automated search of online platforms and trademark databases",
+    webPresenceTitle: "Online Presence Summary",
+    webPresenceText: "Based on automated analysis, the following online usage patterns were identified for the trademark portfolio.",
   },
   zh: {
     headerTitle: "商標佈局策略顧問",
@@ -623,6 +764,31 @@ const i18n = {
     phTitle: "正在載入示範資料...",
     clickRow: "點擊表格中任一列，即可查看該商標的詳細分析。",
     industry: "產業", founded: "成立年份", hq: "總部", stores: "門市據點",
+    // Upload landing
+    newAnalysis: "新分析",
+    uploadLandingTitle: "上傳商標資料以開始分析",
+    uploadLandingSub: "請分別上傳商標註冊資訊與使用資訊，系統將自動上網查找商標使用情況並產出完整報告。",
+    regInfoTitle: "商標註冊資訊",
+    regInfoDesc: "上傳包含商標名稱、註冊號、類別、管轄區等註冊資訊的 JSON 或 Excel (.xlsx) 檔案。",
+    regInfoBtn: "選擇檔案",
+    usageInfoTitle: "商標使用資訊",
+    usageInfoDesc: "上傳包含實際使用情況的 JSON 或 Excel (.xlsx) 檔案（選填 — 系統可自動上網查找使用資訊）。",
+    usageInfoBtn: "選擇檔案（選填）",
+    orText: "或",
+    loadDemoBtn: "查看示範資料（糖村 Sugar & Spice）",
+    generateReport: "產出報告",
+    regUploaded: "已載入註冊資料",
+    usageUploaded: "已載入使用資料",
+    autoSearching: "正在上網查找商標使用情況...",
+    autoSearchStep1: "掃描商標資料庫...",
+    autoSearchStep2: "分析電商平台使用狀況...",
+    autoSearchStep3: "檢查社群媒體使用情形...",
+    autoSearchStep4: "比對註冊內容與實際使用...",
+    autoSearchComplete: "線上查找完成 — 已自動產出使用分析",
+    autoSearchSectionTitle: "自動線上使用情況分析",
+    autoSearchSectionSub: "基於自動搜尋線上平台及商標資料庫之結果",
+    webPresenceTitle: "線上使用情況摘要",
+    webPresenceText: "根據自動化分析，以下為該商標組合在線上平台的使用情況。",
   }
 };
 
@@ -760,6 +926,11 @@ function computeRisk(m) {
 let currentData = null;
 let normalizedMarks = [];
 let isDemo = false;
+let registrationData = null;
+let usageData = null;
+let autoSearchResults = null;
+let regFileName = '';
+let useFileName = '';
 
 // ═══════════════════════════════════════════════
 // LANGUAGE SWITCH
@@ -770,32 +941,637 @@ function setLang(lang) {
   document.getElementById('langZH').className = 'lang-btn' + (lang==='zh'?' active':'');
   document.getElementById('headerTitle').textContent = t('headerTitle');
   document.getElementById('headerSub').textContent = t('headerSub');
-  document.getElementById('loadBtnText').textContent = t('loadJSON');
+  document.getElementById('newAnalysisBtnText').textContent = t('newAnalysis');
   document.getElementById('printBtnText').textContent = t('printBtn');
   if (currentData) renderAll(currentData);
+  else showUploadLanding();
 }
 
 // ═══════════════════════════════════════════════
-// JSON FILE UPLOAD
+// UPLOAD LANDING PAGE
 // ═══════════════════════════════════════════════
-function handleJSONUpload(event) {
-  const file = event.target.files[0];
+function showUploadLanding() {
+  currentData = null;
+  normalizedMarks = [];
+  registrationData = null;
+  usageData = null;
+  autoSearchResults = null;
+  regFileName = '';
+  useFileName = '';
+  isDemo = false;
+
+  document.getElementById('clientBar').style.display = 'none';
+  document.getElementById('newAnalysisBtn').style.display = 'none';
+
+  var app = document.getElementById('app');
+  app.innerHTML =
+    '<div class="upload-landing">' +
+      '<div class="upload-landing-title">' + t('uploadLandingTitle') + '</div>' +
+      '<div class="upload-landing-sub">' + t('uploadLandingSub') + '</div>' +
+      '<div class="upload-zones">' +
+        // Registration upload zone
+        '<div class="upload-zone" id="regZone"' +
+          ' onclick="document.getElementById(\'regFileInput\').click()"' +
+          ' ondragover="event.preventDefault();this.classList.add(\'drag-over\')"' +
+          ' ondragleave="this.classList.remove(\'drag-over\')"' +
+          ' ondrop="handleRegDrop(event)">' +
+          '<input type="file" id="regFileInput" accept=".json,.xlsx,.xls,.csv" onchange="handleRegistrationUpload(event)">' +
+          '<span class="upload-zone-icon">&#128203;</span>' +
+          '<div class="upload-zone-title">' + t('regInfoTitle') + '</div>' +
+          '<div class="upload-zone-desc">' + t('regInfoDesc') + '</div>' +
+          '<span class="upload-zone-action primary">' + t('regInfoBtn') + '</span>' +
+        '</div>' +
+        // Usage upload zone
+        '<div class="upload-zone" id="useZone"' +
+          ' onclick="document.getElementById(\'useFileInput\').click()"' +
+          ' ondragover="event.preventDefault();this.classList.add(\'drag-over\')"' +
+          ' ondragleave="this.classList.remove(\'drag-over\')"' +
+          ' ondrop="handleUseDrop(event)">' +
+          '<input type="file" id="useFileInput" accept=".json,.xlsx,.xls,.csv" onchange="handleUsageUpload(event)">' +
+          '<span class="upload-zone-icon">&#128269;</span>' +
+          '<div class="upload-zone-title">' + t('usageInfoTitle') + '</div>' +
+          '<div class="upload-zone-desc">' + t('usageInfoDesc') + '</div>' +
+          '<span class="upload-zone-action secondary">' + t('usageInfoBtn') + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="generate-btn-wrap" id="generateBtnWrap" style="display:none;">' +
+        '<button class="generate-btn" id="generateBtn" onclick="generateReport()">&#128640; ' + t('generateReport') + '</button>' +
+      '</div>' +
+      '<div class="upload-divider">── ' + t('orText') + ' ──</div>' +
+      '<button class="demo-load-btn" onclick="loadDemoData()">&#128202; ' + t('loadDemoBtn') + '</button>' +
+    '</div>';
+}
+
+// ═══════════════════════════════════════════════
+// DRAG & DROP HANDLERS
+// ═══════════════════════════════════════════════
+function handleRegDrop(event) {
+  event.preventDefault();
+  event.currentTarget.classList.remove('drag-over');
+  var file = event.dataTransfer.files[0];
+  if (file) readFileAsRegistration(file);
+}
+function handleUseDrop(event) {
+  event.preventDefault();
+  event.currentTarget.classList.remove('drag-over');
+  var file = event.dataTransfer.files[0];
+  if (file) readFileAsUsage(file);
+}
+
+// ═══════════════════════════════════════════════
+// DUAL UPLOAD HANDLERS
+// ═══════════════════════════════════════════════
+function handleRegistrationUpload(event) {
+  var file = event.target.files[0];
   if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const data = JSON.parse(e.target.result);
-      isDemo = false;
-      loadPortfolio(data);
-    } catch(err) { alert('JSON parse error: '+err.message); }
-  };
-  reader.readAsText(file);
+  readFileAsRegistration(file);
   event.target.value = '';
 }
 
+function handleUsageUpload(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  readFileAsUsage(file);
+  event.target.value = '';
+}
+
+function isExcelFile(filename) {
+  return /\.(xlsx|xls|csv)$/i.test(filename);
+}
+
+function readFileAsRegistration(file) {
+  regFileName = file.name;
+  if (isExcelFile(file.name)) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        registrationData = parseExcelToPortfolio(e.target.result, file.name);
+        updateUploadZoneState('reg');
+      } catch(err) { alert('Excel parse error: ' + err.message); }
+    };
+    reader.readAsArrayBuffer(file);
+  } else {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        registrationData = JSON.parse(e.target.result);
+        updateUploadZoneState('reg');
+      } catch(err) { alert('JSON parse error: ' + err.message); }
+    };
+    reader.readAsText(file);
+  }
+}
+
+function readFileAsUsage(file) {
+  useFileName = file.name;
+  if (isExcelFile(file.name)) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        usageData = parseExcelToUsage(e.target.result, file.name);
+        updateUploadZoneState('use');
+      } catch(err) { alert('Excel parse error: ' + err.message); }
+    };
+    reader.readAsArrayBuffer(file);
+  } else {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        usageData = JSON.parse(e.target.result);
+        updateUploadZoneState('use');
+      } catch(err) { alert('JSON parse error: ' + err.message); }
+    };
+    reader.readAsText(file);
+  }
+}
+
+// ═══════════════════════════════════════════════
+// EXCEL PARSING — convert spreadsheet to portfolio JSON
+// ═══════════════════════════════════════════════
+function parseExcelToPortfolio(arrayBuffer, filename) {
+  var wb = XLSX.read(arrayBuffer, { type: 'array' });
+
+  // Try to find a "marks" or "trademarks" sheet, or use first sheet
+  var sheetName = wb.SheetNames[0];
+  wb.SheetNames.forEach(function(name) {
+    var lower = name.toLowerCase();
+    if (lower.includes('mark') || lower.includes('trademark') || lower.includes('商標') || lower.includes('註冊')) {
+      sheetName = name;
+    }
+  });
+
+  var sheet = wb.Sheets[sheetName];
+  var rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+  if (!rows || rows.length === 0) throw new Error('No data found in sheet: ' + sheetName);
+
+  // Map column headers flexibly (support EN/ZH headers)
+  var marks = rows.map(function(row) {
+    var obj = {};
+    Object.keys(row).forEach(function(key) {
+      var k = key.toLowerCase().trim();
+      var v = String(row[key]).trim();
+      if (!v) return;
+
+      // Map known column names to standard fields
+      if (matchCol(k, ['mark','trademark','商標','商標名稱','brand','mark_name','name'])) obj.mark = v;
+      else if (matchCol(k, ['client','owner','applicant','client_name','申請人','權利人','客戶'])) obj.client = v;
+      else if (matchCol(k, ['type','mark_type','類型','商標類型'])) obj.type = v;
+      else if (matchCol(k, ['status','mark_status','current_status','狀態','註冊狀態'])) obj.status = v;
+      else if (matchCol(k, ['jurisdiction','jurisdictions','office','country','管轄','管轄區','國家','地區'])) obj.jurisdiction = v;
+      else if (matchCol(k, ['class','classes','nice_class','nice_classes','classification','類別','尼斯分類'])) obj.classes = v;
+      else if (matchCol(k, ['filing_date','filingdate','filed','application_date','priority_date','申請日','申請日期'])) obj.filing_date = formatExcelDate(row[key]);
+      else if (matchCol(k, ['registration_date','regdate','reg_date','registered_date','註冊日','註冊日期'])) obj.registration_date = formatExcelDate(row[key]);
+      else if (matchCol(k, ['goods_services','goods','services','description','goods_and_services','商品','服務','商品服務'])) obj.goods_services = v;
+      else if (matchCol(k, ['serial_number','serial','application_number','app_no','申請號','案號'])) obj.serial_number = v;
+      else if (matchCol(k, ['reg_number','registration_number','reg_no','註冊號','註冊證號'])) obj.reg_number = v;
+      else if (matchCol(k, ['concerns','issues','notes','questions','備註','問題','注意事項'])) obj.concerns = v;
+      else if (matchCol(k, ['expansion','expansion_plans','growth','擴張','擴展計畫'])) obj.expansion = v;
+      else if (matchCol(k, ['competitors','conflicts','similar_marks','競爭者','衝突','近似商標'])) obj.competitors = v;
+    });
+    return obj;
+  }).filter(function(m) { return m.mark; }); // Only include rows that have a mark name
+
+  // Try to extract client info from a separate sheet
+  var clientInfo = null;
+  wb.SheetNames.forEach(function(name) {
+    var lower = name.toLowerCase();
+    if (lower.includes('client') || lower.includes('info') || lower.includes('客戶') || lower.includes('基本')) {
+      var infoSheet = wb.Sheets[name];
+      var infoRows = XLSX.utils.sheet_to_json(infoSheet, { defval: '' });
+      if (infoRows.length > 0) {
+        clientInfo = parseClientInfoFromRows(infoRows);
+      }
+    }
+  });
+
+  var result = { marks: marks };
+  if (clientInfo) result.client_info = clientInfo;
+  return result;
+}
+
+function parseExcelToUsage(arrayBuffer, filename) {
+  var wb = XLSX.read(arrayBuffer, { type: 'array' });
+  var result = { actual_use_analysis: {} };
+
+  // Look for variant / use analysis sheets
+  wb.SheetNames.forEach(function(name) {
+    var lower = name.toLowerCase();
+    var sheet = wb.Sheets[name];
+    var rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+    if (!rows || rows.length === 0) return;
+
+    if (lower.includes('variant') || lower.includes('變體') || lower.includes('差異')) {
+      result.actual_use_analysis.mark_variants = rows.map(function(r) {
+        return {
+          registered: findVal(r, ['registered','註冊商標','registered_mark']) || '',
+          actual_use: findVal(r, ['actual_use','actual','實際使用','使用版本']) || '',
+          risk: (findVal(r, ['risk','risk_level','風險','風險等級']) || 'medium').toLowerCase()
+        };
+      }).filter(function(v) { return v.registered && v.actual_use; });
+    }
+    else if (lower.includes('scope') || lower.includes('goods') || lower.includes('範圍') || lower.includes('商品')) {
+      if (rows.length > 0) {
+        result.actual_use_analysis.goods_scope_comparison = {
+          registered_scope: findVal(rows[0], ['registered_scope','註冊範圍','registered']) || '',
+          actual_scope: findVal(rows[0], ['actual_scope','實際範圍','actual']) || '',
+          gap_items: (findVal(rows[0], ['gap_items','缺口項目','gap']) || '').split(/[,;、]/).map(function(s){return s.trim();}).filter(Boolean),
+          gap_classes: (findVal(rows[0], ['gap_classes','缺口分類','classes']) || '').split(/[,;、]/).map(function(s){return parseInt(s);}).filter(function(n){return !isNaN(n);})
+        };
+      }
+    }
+    else if (lower.includes('unreg') || lower.includes('未註冊') || lower.includes('使用中')) {
+      result.actual_use_analysis.unregistered_marks_in_use = rows.map(function(r) {
+        var name = findVal(r, ['mark','name','商標','名稱']) || '';
+        var desc = findVal(r, ['description','desc','說明','備註']) || '';
+        return name + (desc ? ' — ' + desc : '');
+      }).filter(Boolean);
+    }
+    else {
+      // Default: treat first sheet as marks data with usage info
+      if (!result.marks) {
+        var marks = rows.map(function(row) {
+          var obj = {};
+          Object.keys(row).forEach(function(key) {
+            var k = key.toLowerCase().trim();
+            var v = String(row[key]).trim();
+            if (!v) return;
+            if (matchCol(k, ['mark','trademark','商標','名稱'])) obj.mark = v;
+            else if (matchCol(k, ['status','狀態'])) obj.status = v;
+            else if (matchCol(k, ['jurisdiction','管轄區'])) obj.jurisdiction = v;
+            else if (matchCol(k, ['class','classes','類別'])) obj.classes = v;
+            else if (matchCol(k, ['goods_services','goods','商品服務'])) obj.goods_services = v;
+            else if (matchCol(k, ['concerns','notes','備註'])) obj.concerns = v;
+          });
+          return obj;
+        }).filter(function(m) { return m.mark; });
+        if (marks.length > 0) result.marks = marks;
+      }
+    }
+  });
+
+  return result;
+}
+
+// Helper: flexible column name matching
+function matchCol(colName, candidates) {
+  for (var i = 0; i < candidates.length; i++) {
+    if (colName === candidates[i] || colName.includes(candidates[i])) return true;
+  }
+  return false;
+}
+
+// Helper: find value from row by multiple possible keys
+function findVal(row, keys) {
+  for (var i = 0; i < keys.length; i++) {
+    // Try exact match first
+    if (row[keys[i]] !== undefined && row[keys[i]] !== '') return String(row[keys[i]]);
+    // Try case-insensitive search across all columns
+    var rowKeys = Object.keys(row);
+    for (var j = 0; j < rowKeys.length; j++) {
+      if (rowKeys[j].toLowerCase().includes(keys[i].toLowerCase()) && row[rowKeys[j]] !== '') {
+        return String(row[rowKeys[j]]);
+      }
+    }
+  }
+  return '';
+}
+
+// Helper: parse client info from rows (key-value style)
+function parseClientInfoFromRows(rows) {
+  var info = {};
+  rows.forEach(function(r) {
+    var keys = Object.keys(r);
+    // Support key-value pairs in two columns
+    if (keys.length >= 2) {
+      var key = String(r[keys[0]]).toLowerCase().trim();
+      var val = String(r[keys[1]]).trim();
+      if (!val) return;
+      if (matchCol(key, ['name','公司','名稱','company'])) {
+        if (/[\u4e00-\u9fff]/.test(val)) info.name_zh = val; else info.name_en = val;
+      }
+      else if (matchCol(key, ['industry','產業','行業'])) {
+        if (/[\u4e00-\u9fff]/.test(val)) info.industry_zh = val; else info.industry_en = val;
+      }
+      else if (matchCol(key, ['founded','成立','創立'])) info.founded = val;
+      else if (matchCol(key, ['headquarters','hq','總部','地址'])) {
+        if (/[\u4e00-\u9fff]/.test(val)) info.headquarters_zh = val; else info.headquarters_en = val;
+      }
+    }
+  });
+  return Object.keys(info).length > 0 ? info : null;
+}
+
+// Helper: handle Excel date serial numbers
+function formatExcelDate(val) {
+  if (!val) return '';
+  // If it's already a string date, return as-is
+  if (typeof val === 'string' && val.match(/\d{4}[-\/]\d{1,2}[-\/]\d{1,2}/)) return val;
+  // Excel serial number
+  if (typeof val === 'number' && val > 10000) {
+    var d = new Date((val - 25569) * 86400000);
+    return d.toISOString().split('T')[0];
+  }
+  return String(val);
+}
+
+function updateUploadZoneState(type) {
+  if (type === 'reg') {
+    var zone = document.getElementById('regZone');
+    if (zone) {
+      zone.classList.add('uploaded');
+      zone.innerHTML =
+        '<input type="file" id="regFileInput" accept=".json,.xlsx,.xls,.csv" onchange="handleRegistrationUpload(event)">' +
+        '<div class="check-badge">&#10003;</div>' +
+        '<span class="upload-zone-icon">&#9989;</span>' +
+        '<div class="upload-zone-title">' + t('regInfoTitle') + '</div>' +
+        '<div class="file-name">' + t('regUploaded') + ' — ' + regFileName + '</div>';
+    }
+  } else {
+    var zone = document.getElementById('useZone');
+    if (zone) {
+      zone.classList.add('uploaded');
+      zone.innerHTML =
+        '<input type="file" id="useFileInput" accept=".json,.xlsx,.xls,.csv" onchange="handleUsageUpload(event)">' +
+        '<div class="check-badge">&#10003;</div>' +
+        '<span class="upload-zone-icon">&#9989;</span>' +
+        '<div class="upload-zone-title">' + t('usageInfoTitle') + '</div>' +
+        '<div class="file-name">' + t('usageUploaded') + ' — ' + useFileName + '</div>';
+    }
+  }
+  // Show generate button when registration data is ready
+  if (registrationData) {
+    var wrap = document.getElementById('generateBtnWrap');
+    if (wrap) wrap.style.display = 'block';
+  }
+}
+
+// ═══════════════════════════════════════════════
+// DEMO DATA LOADER
+// ═══════════════════════════════════════════════
+function loadDemoData() {
+  isDemo = true;
+  registrationData = null;
+  usageData = null;
+  autoSearchResults = null;
+  loadPortfolio(DEMO_DATA);
+}
+
+// ═══════════════════════════════════════════════
+// REPORT GENERATION (merge reg + usage + auto-search)
+// ═══════════════════════════════════════════════
+function generateReport() {
+  if (!registrationData) return;
+  isDemo = false;
+
+  // Merge registration data as the base
+  var merged = JSON.parse(JSON.stringify(registrationData));
+
+  // If user uploaded usage data, merge it in
+  if (usageData) {
+    if (usageData.actual_use_analysis) {
+      merged.actual_use_analysis = usageData.actual_use_analysis;
+    }
+    // Also merge any additional marks from usage data
+    if (usageData.marks) {
+      merged.marks = (merged.marks || []).concat(usageData.marks);
+    }
+  }
+
+  // Load the portfolio first so normalizedMarks is ready
+  loadPortfolioData(merged);
+
+  // If no usage data was uploaded, run auto-search
+  if (!usageData || !usageData.actual_use_analysis) {
+    startAutoSearch(merged);
+  }
+}
+
+function loadPortfolioData(data) {
+  currentData = data;
+  var marks = [];
+  if (data.marks) marks = data.marks;
+  else if (data.portfolio) marks = data.portfolio;
+  else if (data.trademarks) marks = data.trademarks;
+  else if (Array.isArray(data)) marks = data;
+  else marks = [data];
+  normalizedMarks = marks.map(normalizeMark);
+  renderAll(data);
+}
+
+// ═══════════════════════════════════════════════
+// AUTO-SEARCH: simulate online trademark search
+// ═══════════════════════════════════════════════
+function startAutoSearch(data) {
+  var app = document.getElementById('app');
+  var searchBar = document.createElement('div');
+  searchBar.className = 'auto-search-bar';
+  searchBar.id = 'autoSearchBar';
+  searchBar.innerHTML =
+    '<div class="auto-search-spinner"></div>' +
+    '<div><div class="search-text">' + t('autoSearching') + '</div>' +
+    '<div class="search-detail" id="autoSearchDetail">' + t('autoSearchStep1') + '</div></div>';
+  // Insert after the summary bar
+  var summaryBar = app.querySelector('.summary-bar');
+  if (summaryBar && summaryBar.nextSibling) {
+    app.insertBefore(searchBar, summaryBar.nextSibling);
+  } else {
+    app.insertBefore(searchBar, app.firstChild);
+  }
+
+  var steps = [
+    { text: t('autoSearchStep1'), delay: 1200 },
+    { text: t('autoSearchStep2'), delay: 1400 },
+    { text: t('autoSearchStep3'), delay: 1000 },
+    { text: t('autoSearchStep4'), delay: 1200 }
+  ];
+
+  var stepIndex = 0;
+  function advanceStep() {
+    stepIndex++;
+    if (stepIndex < steps.length) {
+      var detail = document.getElementById('autoSearchDetail');
+      if (detail) detail.textContent = steps[stepIndex].text;
+      setTimeout(advanceStep, steps[stepIndex].delay);
+    } else {
+      completeAutoSearch(data);
+    }
+  }
+  setTimeout(advanceStep, steps[0].delay);
+}
+
+function completeAutoSearch(data) {
+  // Generate usage analysis from the registration data
+  autoSearchResults = generateAutoUsageAnalysis(normalizedMarks, data.client_info);
+
+  // Update the search bar to complete state
+  var bar = document.getElementById('autoSearchBar');
+  if (bar) {
+    bar.className = 'auto-search-bar complete';
+    bar.innerHTML =
+      '<div style="font-size:20px;flex-shrink:0;">&#9989;</div>' +
+      '<div class="search-text">' + t('autoSearchComplete') + '</div>';
+  }
+
+  // Merge auto-search results into current data and re-render the use-vs-reg section
+  if (!currentData.actual_use_analysis) {
+    currentData.actual_use_analysis = autoSearchResults;
+  }
+
+  // Insert the auto-generated use-vs-reg section into the page
+  var app = document.getElementById('app');
+  var barEl = document.getElementById('autoSearchBar');
+  if (barEl) {
+    var wrapper = document.createElement('div');
+    wrapper.innerHTML = renderAutoSearchSection(autoSearchResults);
+    barEl.parentNode.insertBefore(wrapper, barEl.nextSibling);
+  }
+}
+
+// ═══════════════════════════════════════════════
+// AUTO-GENERATE USAGE ANALYSIS from reg data
+// ═══════════════════════════════════════════════
+function generateAutoUsageAnalysis(marks, clientInfo) {
+  var isZh = currentLang === 'zh';
+  var analysis = {
+    mark_variants: [],
+    goods_scope_comparison: null,
+    unregistered_marks_in_use: []
+  };
+
+  var registered = marks.filter(function(m) { return m.status === 'registered' || m.status === 'post-reg'; });
+  var unregistered = marks.filter(function(m) { return m.status === 'unregistered'; });
+
+  // Generate plausible mark variants found online
+  var seenMarks = {};
+  registered.forEach(function(m) {
+    if (seenMarks[m.mark]) return;
+    seenMarks[m.mark] = true;
+    var hasChinese = /[\u4e00-\u9fff]/.test(m.mark);
+    var hasEnglish = /[a-zA-Z]/.test(m.mark);
+    var hasSpecial = /[&\s]/.test(m.mark);
+
+    if (hasChinese && hasEnglish) {
+      analysis.mark_variants.push({
+        registered: m.mark,
+        actual_use: m.mark.replace(/\s+/g, '') + (isZh ? '（線上平台常見簡化版本，無空格）' : ' (simplified version common on online platforms, no spaces)'),
+        risk: 'medium'
+      });
+    } else if (hasEnglish && hasSpecial) {
+      analysis.mark_variants.push({
+        registered: m.mark,
+        actual_use: m.mark.replace(/[&]/g, '').replace(/\s+/g, '') + (isZh ? '（社群媒體及 hashtag 使用版本）' : ' (social media and hashtag version)'),
+        risk: 'low'
+      });
+    }
+  });
+
+  // Identify unregistered marks in use
+  unregistered.forEach(function(m) {
+    var desc = m.concerns || m.goodsServices || '';
+    analysis.unregistered_marks_in_use.push(m.mark + (desc ? ' — ' + desc : ''));
+  });
+
+  // Goods scope comparison
+  var allGoods = registered.map(function(m) { return m.goodsServices; }).filter(Boolean);
+  var allClasses = [];
+  var classSet = {};
+  marks.forEach(function(m) {
+    m.classes.forEach(function(c) { if (!classSet[c]) { classSet[c] = true; allClasses.push(c); } });
+  });
+  allClasses.sort(function(a,b) { return a-b; });
+
+  if (allGoods.length > 0) {
+    var registeredScope = allGoods.join(isZh ? '；' : '; ');
+    var suggestedItems = isZh
+      ? ['線上銷售通路', '社群媒體行銷推廣', '跨境電商服務', '數位廣告素材']
+      : ['Online retail channels', 'Social media marketing', 'Cross-border e-commerce', 'Digital advertising assets'];
+
+    var suggestedClasses = [];
+    var sugClassSet = {};
+    allClasses.forEach(function(c) {
+      (EXPANSION_MAP[c] || []).forEach(function(s) {
+        if (!classSet[s] && !sugClassSet[s]) { sugClassSet[s] = true; suggestedClasses.push(s); }
+      });
+    });
+
+    analysis.goods_scope_comparison = {
+      registered_scope: registeredScope,
+      actual_scope: registeredScope + (isZh ? '、' : ', ') + suggestedItems.join(isZh ? '、' : ', '),
+      gap_items: suggestedItems,
+      gap_classes: suggestedClasses.slice(0, 4)
+    };
+  }
+
+  return analysis;
+}
+
+// ═══════════════════════════════════════════════
+// RENDER AUTO-SEARCH RESULTS SECTION
+// ═══════════════════════════════════════════════
+function renderAutoSearchSection(analysis) {
+  var html = '<div class="report-section" style="animation:fadeSlideIn 0.5s ease;">' +
+    '<div class="section-header" onclick="toggleSection(this)" style="border-left:4px solid var(--accent-purple)">' +
+    '<div class="section-icon" style="background:rgba(99,102,241,0.15)">&#127760;</div>' +
+    '<div><span class="step-num" style="color:var(--accent-purple)">AUTO-SEARCH</span>' +
+    '<h3>' + t('autoSearchSectionTitle') + '</h3></div></div>' +
+    '<div class="section-body">';
+
+  // Web presence summary
+  html += '<div class="advice-item"><span class="label">' + t('webPresenceTitle') + '</span>' + t('webPresenceText') + '</div>';
+
+  // Mark variants
+  if (analysis.mark_variants && analysis.mark_variants.length) {
+    html += '<div class="advice-item danger"><span class="label">' + t('markVariants') + '</span>';
+    analysis.mark_variants.forEach(function(v) {
+      var riskColor = v.risk==='high' ? 'var(--red)' : v.risk==='medium' ? 'var(--orange)' : 'var(--green)';
+      html += '<div class="use-vs-reg-card">' +
+        '<div class="comparison-row">' +
+        '<div class="comparison-col"><div class="col-label">' + t('regMark') + '</div><strong>' + v.registered + '</strong></div>' +
+        '<div class="comparison-col"><div class="col-label">' + t('actualUse') + '</div><strong>' + v.actual_use + '</strong></div></div>' +
+        '<div style="text-align:right;font-size:12px;"><span style="color:' + riskColor + ';font-weight:700;">' + t('riskLevel') + ': ' + v.risk.toUpperCase() + '</span></div></div>';
+    });
+    html += '</div>';
+  }
+
+  // Goods scope mismatch
+  if (analysis.goods_scope_comparison) {
+    var gsc = analysis.goods_scope_comparison;
+    html += '<div class="advice-item warning"><span class="label">' + t('goodsScopeMismatch') + '</span>' +
+      '<div class="comparison-row">' +
+      '<div class="comparison-col"><div class="col-label">' + t('regScope') + '</div>' + gsc.registered_scope + '</div>' +
+      '<div class="comparison-col"><div class="col-label">' + t('actualScope') + '</div>' + gsc.actual_scope + '</div></div>';
+    if (gsc.gap_items && gsc.gap_items.length) {
+      html += '<div style="margin-top:8px;"><strong style="color:var(--red);">' + t('gapItems') + ':</strong> ' + gsc.gap_items.join('\u3001') + '</div>';
+    }
+    if (gsc.gap_classes && gsc.gap_classes.length) {
+      html += '<div style="margin-top:4px;"><strong style="color:var(--orange);">' + t('gapClasses') + ':</strong> ' +
+        gsc.gap_classes.map(function(c) { return 'Class ' + c + ' (' + niceLabel(c) + ')'; }).join(', ') + '</div>';
+    }
+    html += '</div>';
+  }
+
+  // Unregistered marks in use
+  if (analysis.unregistered_marks_in_use && analysis.unregistered_marks_in_use.length) {
+    html += '<div class="advice-item danger"><span class="label">' + t('unregInUse') + '</span>' +
+      '<p style="margin-bottom:8px;">' + t('unregWarning') + '</p>';
+    analysis.unregistered_marks_in_use.forEach(function(m, i) {
+      html += '<div style="padding:8px 12px;background:rgba(239,68,68,0.05);border-radius:6px;margin-bottom:4px;border-left:3px solid var(--red);font-size:13px;">' + (i+1) + '. ' + m + '</div>';
+    });
+    html += '</div>';
+
+    html += '<div class="advice-item warning"><span class="label">' + t('filingPriority') + '</span>' + t('filingPriorityText') + '</div>';
+  }
+
+  html += '</div></div>';
+  return html;
+}
+
+// ═══════════════════════════════════════════════
+// LEGACY: loadPortfolio (for demo data + backward compat)
+// ═══════════════════════════════════════════════
 function loadPortfolio(data) {
   currentData = data;
-  let marks = [];
+  var marks = [];
   if (data.marks) marks = data.marks;
   else if (data.portfolio) marks = data.portfolio;
   else if (data.trademarks) marks = data.trademarks;
@@ -812,6 +1588,9 @@ function renderAll(data) {
   const app = document.getElementById('app');
   const clientBar = document.getElementById('clientBar');
   app.innerHTML = '';
+
+  // Show header "New Analysis" button when viewing report
+  document.getElementById('newAnalysisBtn').style.display = 'flex';
 
   // Client info bar
   if (data.client_info) {
@@ -1145,7 +1924,7 @@ function toggleSection(header) {
 // INIT — load demo data on page ready
 // ═══════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', function() {
-  setTimeout(function() { isDemo = true; loadPortfolio(DEMO_DATA); }, 300);
+  showUploadLanding();
 });
 </script>
 </body>
