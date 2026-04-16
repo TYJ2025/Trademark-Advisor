@@ -847,24 +847,37 @@ function daysBetween(d1,d2) { return Math.round((d2-d1)/(1000*60*60*24)); }
 function advice(label,text,type) { return '<div class="advice-item '+(type||'')+'"><span class="label">'+label+'</span>'+text+'</div>'; }
 
 function normalizeStatus(str) {
-  const s = (str||'').toLowerCase();
-  // Chinese status matching (check before English to handle mixed inputs)
+  const s = (str||'').toLowerCase().trim();
+  if (!s) return '';
+  // Chinese: unregistered (check first — '未註冊' contains '註冊')
   if (s.includes('未註冊') || s.includes('未注册')) return 'unregistered';
-  if (s.includes('已註冊') || s.includes('已注册') || s.includes('註冊') && !s.includes('未') && !s.includes('後') && !s.includes('后')) return 'registered';
+  // Chinese: registered
+  if (s.includes('已註冊') || s.includes('已注册') || s.includes('核准') || s.includes('有效')
+    || s.includes('存續') || s.includes('生效') || s.includes('活躍') || s.includes('獲准')
+    || s.includes('註冊公告') || s.includes('注册公告')
+    || (s.includes('註冊') && !s.includes('未') && !s.includes('後') && !s.includes('后') && !s.includes('待'))
+    || (s.includes('注册') && !s.includes('未') && !s.includes('后') && !s.includes('待'))) return 'registered';
+  // Chinese: post-reg
   if (s.includes('註冊後') || s.includes('注册后') || s.includes('維護') || s.includes('维护')) return 'post-reg';
+  // Chinese: intent
   if (s.includes('意圖使用') || s.includes('意图使用')) return 'intent';
-  if (s.includes('公告') || s.includes('異議') || s.includes('异议')) return 'published';
-  if (s.includes('續展') || s.includes('续展') || s.includes('待續') || s.includes('待续')) return 'renewal';
-  if (s.includes('審查') || s.includes('审查') || s.includes('待審') || s.includes('待审') || s.includes('申請中') || s.includes('申请中')) return 'pending';
-  // English status matching
+  // Chinese: published
+  if (s.includes('公告') || s.includes('異議') || s.includes('异议') || s.includes('公示')) return 'published';
+  // Chinese: renewal
+  if (s.includes('續展') || s.includes('续展') || s.includes('待續') || s.includes('待续') || s.includes('到期')) return 'renewal';
+  // Chinese: pending
+  if (s.includes('審查') || s.includes('审查') || s.includes('待審') || s.includes('待审')
+    || s.includes('申請中') || s.includes('申请中') || s.includes('審理') || s.includes('审理')) return 'pending';
+  // English
   if (s.includes('register') && !s.includes('un') && !s.includes('post')) return 'registered';
+  if (s.includes('active') || s.includes('valid') || s.includes('granted') || s.includes('approved') || s.includes('alive')) return 'registered';
   if (s.includes('post')||s.includes('sec')) return 'post-reg';
   if (s.includes('intent')||s.includes('itu')||s.includes('1b')) return 'intent';
   if (s.includes('publish')||s.includes('opposition')) return 'published';
-  if (s.includes('renew')) return 'renewal';
+  if (s.includes('renew')||s.includes('expir')) return 'renewal';
   if (s.includes('unregist')||s.includes('common')) return 'unregistered';
-  if (s.includes('pending')||s.includes('exam')) return 'pending';
-  return 'pending';
+  if (s.includes('pending')||s.includes('exam')||s.includes('filed')) return 'pending';
+  return '';
 }
 
 function normalizeMarkType(str) {
@@ -899,19 +912,27 @@ function normalizeMark(obj) {
     }
     return '';
   };
+  var rawStatus = normalizeStatus(get('status','mark_status','current_status'));
+  var regDate = get('registration_date','regdate','reg_date','registered_date');
+  var regNumber = get('reg_number','registration_number','reg_no');
+  // Infer status from other fields when status column is missing or unrecognized
+  if (!rawStatus) {
+    if (regDate || regNumber) rawStatus = 'registered';
+    else rawStatus = 'pending';
+  }
   return {
     mark: get('mark','trademark','mark_name','name','brand') || 'UNNAMED',
     client: get('client','client_name','owner','applicant') || '',
     markType: normalizeMarkType(get('type','mark_type')),
-    status: normalizeStatus(get('status','mark_status','current_status')),
+    status: rawStatus,
     jurisdictions: parseJurisdictions(get('jurisdiction','jurisdictions','office','country')),
     classes: parseClasses(get('classes','class','nice_class','nice_classes','classification')),
     filingDate: get('filing_date','filingdate','filed','priority_date','application_date'),
-    regDate: get('registration_date','regdate','reg_date','registered_date'),
+    regDate: regDate,
     goodsServices: get('goods_services','goods','services','description','goods_and_services'),
     concerns: get('concerns','issues','notes','questions'),
     serialNumber: get('serial_number','serial','application_number','app_no'),
-    regNumber: get('reg_number','registration_number','reg_no'),
+    regNumber: regNumber,
     expansion: get('expansion','expansion_plans','growth'),
     competitors: get('competitors','conflicts','similar_marks'),
   };
@@ -1129,20 +1150,20 @@ function parseExcelToPortfolio(arrayBuffer, filename) {
       // Map known column names to standard fields
       // IMPORTANT: check mark LAST because '商標' is a substring of many Chinese column names
       // (e.g. '商標狀態', '商標類別', '商標類型') — checking it first would hijack those fields
-      if (matchCol(k, ['status','mark_status','current_status','狀態','註冊狀態','商標狀態'])) obj.status = v;
-      else if (matchCol(k, ['client','owner','applicant','client_name','申請人','權利人','客戶'])) obj.client = v;
-      else if (matchCol(k, ['type','mark_type','類型','商標類型'])) obj.type = v;
-      else if (matchCol(k, ['jurisdiction','jurisdictions','office','country','管轄','管轄區','國家','地區'])) obj.jurisdiction = v;
-      else if (matchCol(k, ['class','classes','nice_class','nice_classes','classification','類別','尼斯分類','商標類別'])) obj.classes = v;
+      if (matchCol(k, ['status','mark_status','current_status','狀態','註冊狀態','商標狀態','案件狀態','權利狀態'])) obj.status = v;
+      else if (matchCol(k, ['client','owner','applicant','client_name','申請人','權利人','客戶','商標權人','所有人','持有人'])) obj.client = v;
+      else if (matchCol(k, ['type','mark_type','類型','商標類型','型態'])) obj.type = v;
+      else if (matchCol(k, ['jurisdiction','jurisdictions','office','country','管轄','管轄區','國家','地區','註冊局','申請地'])) obj.jurisdiction = v;
+      else if (matchCol(k, ['class','classes','nice_class','nice_classes','classification','類別','尼斯分類','商標類別','國際分類'])) obj.classes = v;
       else if (matchCol(k, ['filing_date','filingdate','filed','application_date','priority_date','申請日','申請日期'])) obj.filing_date = formatExcelDate(row[key]);
-      else if (matchCol(k, ['registration_date','regdate','reg_date','registered_date','註冊日','註冊日期'])) obj.registration_date = formatExcelDate(row[key]);
-      else if (matchCol(k, ['goods_services','goods','services','description','goods_and_services','商品','服務','商品服務'])) obj.goods_services = v;
-      else if (matchCol(k, ['serial_number','serial','application_number','app_no','申請號','案號'])) obj.serial_number = v;
-      else if (matchCol(k, ['reg_number','registration_number','reg_no','註冊號','註冊證號'])) obj.reg_number = v;
+      else if (matchCol(k, ['registration_date','regdate','reg_date','registered_date','註冊日','註冊日期','核准日','公告日期'])) obj.registration_date = formatExcelDate(row[key]);
+      else if (matchCol(k, ['goods_services','goods','services','description','goods_and_services','商品','服務','商品服務','商品及服務','指定商品','商品名稱','服務名稱'])) obj.goods_services = v;
+      else if (matchCol(k, ['serial_number','serial','application_number','app_no','申請號','案號','申請案號'])) obj.serial_number = v;
+      else if (matchCol(k, ['reg_number','registration_number','reg_no','註冊號','註冊證號','註冊號碼','證書號'])) obj.reg_number = v;
       else if (matchCol(k, ['concerns','issues','notes','questions','備註','問題','注意事項'])) obj.concerns = v;
       else if (matchCol(k, ['expansion','expansion_plans','growth','擴張','擴展計畫'])) obj.expansion = v;
       else if (matchCol(k, ['competitors','conflicts','similar_marks','競爭者','衝突','近似商標'])) obj.competitors = v;
-      else if (matchCol(k, ['mark','trademark','商標','商標名稱','brand','mark_name','name'])) obj.mark = v;
+      else if (matchCol(k, ['mark','trademark','商標','商標名稱','brand','mark_name','name','名稱'])) obj.mark = v;
     });
     return obj;
   }).filter(function(m) { return m.mark; }); // Only include rows that have a mark name
