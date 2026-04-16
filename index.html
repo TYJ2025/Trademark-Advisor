@@ -399,6 +399,7 @@
     .upload-landing-title { font-size: 22px; }
   }
 </style>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -654,10 +655,10 @@ const i18n = {
     uploadLandingTitle: "Upload Trademark Data to Begin Analysis",
     uploadLandingSub: "Upload trademark registration information and usage data separately. The system will automatically search for online usage patterns and generate a comprehensive report.",
     regInfoTitle: "Trademark Registration Info",
-    regInfoDesc: "Upload a JSON file containing trademark names, registration numbers, classes, jurisdictions, and other registration details.",
+    regInfoDesc: "Upload a JSON or Excel (.xlsx) file containing trademark names, registration numbers, classes, jurisdictions, and other registration details.",
     regInfoBtn: "Select File",
     usageInfoTitle: "Trademark Usage Info",
-    usageInfoDesc: "Upload a JSON file with actual usage data (optional — the system can auto-search for usage information).",
+    usageInfoDesc: "Upload a JSON or Excel (.xlsx) file with actual usage data (optional — the system can auto-search for usage information).",
     usageInfoBtn: "Select File (Optional)",
     orText: "or",
     loadDemoBtn: "View Demo Data (Sugar & Spice)",
@@ -768,10 +769,10 @@ const i18n = {
     uploadLandingTitle: "上傳商標資料以開始分析",
     uploadLandingSub: "請分別上傳商標註冊資訊與使用資訊，系統將自動上網查找商標使用情況並產出完整報告。",
     regInfoTitle: "商標註冊資訊",
-    regInfoDesc: "上傳包含商標名稱、註冊號、類別、管轄區等註冊資訊的 JSON 檔案。",
+    regInfoDesc: "上傳包含商標名稱、註冊號、類別、管轄區等註冊資訊的 JSON 或 Excel (.xlsx) 檔案。",
     regInfoBtn: "選擇檔案",
     usageInfoTitle: "商標使用資訊",
-    usageInfoDesc: "上傳包含實際使用情況的 JSON 檔案（選填 — 系統可自動上網查找使用資訊）。",
+    usageInfoDesc: "上傳包含實際使用情況的 JSON 或 Excel (.xlsx) 檔案（選填 — 系統可自動上網查找使用資訊）。",
     usageInfoBtn: "選擇檔案（選填）",
     orText: "或",
     loadDemoBtn: "查看示範資料（糖村 Sugar & Spice）",
@@ -974,7 +975,7 @@ function showUploadLanding() {
           ' ondragover="event.preventDefault();this.classList.add(\'drag-over\')"' +
           ' ondragleave="this.classList.remove(\'drag-over\')"' +
           ' ondrop="handleRegDrop(event)">' +
-          '<input type="file" id="regFileInput" accept=".json" onchange="handleRegistrationUpload(event)">' +
+          '<input type="file" id="regFileInput" accept=".json,.xlsx,.xls,.csv" onchange="handleRegistrationUpload(event)">' +
           '<span class="upload-zone-icon">&#128203;</span>' +
           '<div class="upload-zone-title">' + t('regInfoTitle') + '</div>' +
           '<div class="upload-zone-desc">' + t('regInfoDesc') + '</div>' +
@@ -986,7 +987,7 @@ function showUploadLanding() {
           ' ondragover="event.preventDefault();this.classList.add(\'drag-over\')"' +
           ' ondragleave="this.classList.remove(\'drag-over\')"' +
           ' ondrop="handleUseDrop(event)">' +
-          '<input type="file" id="useFileInput" accept=".json" onchange="handleUsageUpload(event)">' +
+          '<input type="file" id="useFileInput" accept=".json,.xlsx,.xls,.csv" onchange="handleUsageUpload(event)">' +
           '<span class="upload-zone-icon">&#128269;</span>' +
           '<div class="upload-zone-title">' + t('usageInfoTitle') + '</div>' +
           '<div class="upload-zone-desc">' + t('usageInfoDesc') + '</div>' +
@@ -1034,28 +1035,243 @@ function handleUsageUpload(event) {
   event.target.value = '';
 }
 
+function isExcelFile(filename) {
+  return /\.(xlsx|xls|csv)$/i.test(filename);
+}
+
 function readFileAsRegistration(file) {
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      registrationData = JSON.parse(e.target.result);
-      regFileName = file.name;
-      updateUploadZoneState('reg');
-    } catch(err) { alert('JSON parse error: ' + err.message); }
-  };
-  reader.readAsText(file);
+  regFileName = file.name;
+  if (isExcelFile(file.name)) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        registrationData = parseExcelToPortfolio(e.target.result, file.name);
+        updateUploadZoneState('reg');
+      } catch(err) { alert('Excel parse error: ' + err.message); }
+    };
+    reader.readAsArrayBuffer(file);
+  } else {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        registrationData = JSON.parse(e.target.result);
+        updateUploadZoneState('reg');
+      } catch(err) { alert('JSON parse error: ' + err.message); }
+    };
+    reader.readAsText(file);
+  }
 }
 
 function readFileAsUsage(file) {
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      usageData = JSON.parse(e.target.result);
-      useFileName = file.name;
-      updateUploadZoneState('use');
-    } catch(err) { alert('JSON parse error: ' + err.message); }
-  };
-  reader.readAsText(file);
+  useFileName = file.name;
+  if (isExcelFile(file.name)) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        usageData = parseExcelToUsage(e.target.result, file.name);
+        updateUploadZoneState('use');
+      } catch(err) { alert('Excel parse error: ' + err.message); }
+    };
+    reader.readAsArrayBuffer(file);
+  } else {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        usageData = JSON.parse(e.target.result);
+        updateUploadZoneState('use');
+      } catch(err) { alert('JSON parse error: ' + err.message); }
+    };
+    reader.readAsText(file);
+  }
+}
+
+// ═══════════════════════════════════════════════
+// EXCEL PARSING — convert spreadsheet to portfolio JSON
+// ═══════════════════════════════════════════════
+function parseExcelToPortfolio(arrayBuffer, filename) {
+  var wb = XLSX.read(arrayBuffer, { type: 'array' });
+
+  // Try to find a "marks" or "trademarks" sheet, or use first sheet
+  var sheetName = wb.SheetNames[0];
+  wb.SheetNames.forEach(function(name) {
+    var lower = name.toLowerCase();
+    if (lower.includes('mark') || lower.includes('trademark') || lower.includes('商標') || lower.includes('註冊')) {
+      sheetName = name;
+    }
+  });
+
+  var sheet = wb.Sheets[sheetName];
+  var rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+  if (!rows || rows.length === 0) throw new Error('No data found in sheet: ' + sheetName);
+
+  // Map column headers flexibly (support EN/ZH headers)
+  var marks = rows.map(function(row) {
+    var obj = {};
+    Object.keys(row).forEach(function(key) {
+      var k = key.toLowerCase().trim();
+      var v = String(row[key]).trim();
+      if (!v) return;
+
+      // Map known column names to standard fields
+      if (matchCol(k, ['mark','trademark','商標','商標名稱','brand','mark_name','name'])) obj.mark = v;
+      else if (matchCol(k, ['client','owner','applicant','client_name','申請人','權利人','客戶'])) obj.client = v;
+      else if (matchCol(k, ['type','mark_type','類型','商標類型'])) obj.type = v;
+      else if (matchCol(k, ['status','mark_status','current_status','狀態','註冊狀態'])) obj.status = v;
+      else if (matchCol(k, ['jurisdiction','jurisdictions','office','country','管轄','管轄區','國家','地區'])) obj.jurisdiction = v;
+      else if (matchCol(k, ['class','classes','nice_class','nice_classes','classification','類別','尼斯分類'])) obj.classes = v;
+      else if (matchCol(k, ['filing_date','filingdate','filed','application_date','priority_date','申請日','申請日期'])) obj.filing_date = formatExcelDate(row[key]);
+      else if (matchCol(k, ['registration_date','regdate','reg_date','registered_date','註冊日','註冊日期'])) obj.registration_date = formatExcelDate(row[key]);
+      else if (matchCol(k, ['goods_services','goods','services','description','goods_and_services','商品','服務','商品服務'])) obj.goods_services = v;
+      else if (matchCol(k, ['serial_number','serial','application_number','app_no','申請號','案號'])) obj.serial_number = v;
+      else if (matchCol(k, ['reg_number','registration_number','reg_no','註冊號','註冊證號'])) obj.reg_number = v;
+      else if (matchCol(k, ['concerns','issues','notes','questions','備註','問題','注意事項'])) obj.concerns = v;
+      else if (matchCol(k, ['expansion','expansion_plans','growth','擴張','擴展計畫'])) obj.expansion = v;
+      else if (matchCol(k, ['competitors','conflicts','similar_marks','競爭者','衝突','近似商標'])) obj.competitors = v;
+    });
+    return obj;
+  }).filter(function(m) { return m.mark; }); // Only include rows that have a mark name
+
+  // Try to extract client info from a separate sheet
+  var clientInfo = null;
+  wb.SheetNames.forEach(function(name) {
+    var lower = name.toLowerCase();
+    if (lower.includes('client') || lower.includes('info') || lower.includes('客戶') || lower.includes('基本')) {
+      var infoSheet = wb.Sheets[name];
+      var infoRows = XLSX.utils.sheet_to_json(infoSheet, { defval: '' });
+      if (infoRows.length > 0) {
+        clientInfo = parseClientInfoFromRows(infoRows);
+      }
+    }
+  });
+
+  var result = { marks: marks };
+  if (clientInfo) result.client_info = clientInfo;
+  return result;
+}
+
+function parseExcelToUsage(arrayBuffer, filename) {
+  var wb = XLSX.read(arrayBuffer, { type: 'array' });
+  var result = { actual_use_analysis: {} };
+
+  // Look for variant / use analysis sheets
+  wb.SheetNames.forEach(function(name) {
+    var lower = name.toLowerCase();
+    var sheet = wb.Sheets[name];
+    var rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+    if (!rows || rows.length === 0) return;
+
+    if (lower.includes('variant') || lower.includes('變體') || lower.includes('差異')) {
+      result.actual_use_analysis.mark_variants = rows.map(function(r) {
+        return {
+          registered: findVal(r, ['registered','註冊商標','registered_mark']) || '',
+          actual_use: findVal(r, ['actual_use','actual','實際使用','使用版本']) || '',
+          risk: (findVal(r, ['risk','risk_level','風險','風險等級']) || 'medium').toLowerCase()
+        };
+      }).filter(function(v) { return v.registered && v.actual_use; });
+    }
+    else if (lower.includes('scope') || lower.includes('goods') || lower.includes('範圍') || lower.includes('商品')) {
+      if (rows.length > 0) {
+        result.actual_use_analysis.goods_scope_comparison = {
+          registered_scope: findVal(rows[0], ['registered_scope','註冊範圍','registered']) || '',
+          actual_scope: findVal(rows[0], ['actual_scope','實際範圍','actual']) || '',
+          gap_items: (findVal(rows[0], ['gap_items','缺口項目','gap']) || '').split(/[,;、]/).map(function(s){return s.trim();}).filter(Boolean),
+          gap_classes: (findVal(rows[0], ['gap_classes','缺口分類','classes']) || '').split(/[,;、]/).map(function(s){return parseInt(s);}).filter(function(n){return !isNaN(n);})
+        };
+      }
+    }
+    else if (lower.includes('unreg') || lower.includes('未註冊') || lower.includes('使用中')) {
+      result.actual_use_analysis.unregistered_marks_in_use = rows.map(function(r) {
+        var name = findVal(r, ['mark','name','商標','名稱']) || '';
+        var desc = findVal(r, ['description','desc','說明','備註']) || '';
+        return name + (desc ? ' — ' + desc : '');
+      }).filter(Boolean);
+    }
+    else {
+      // Default: treat first sheet as marks data with usage info
+      if (!result.marks) {
+        var marks = rows.map(function(row) {
+          var obj = {};
+          Object.keys(row).forEach(function(key) {
+            var k = key.toLowerCase().trim();
+            var v = String(row[key]).trim();
+            if (!v) return;
+            if (matchCol(k, ['mark','trademark','商標','名稱'])) obj.mark = v;
+            else if (matchCol(k, ['status','狀態'])) obj.status = v;
+            else if (matchCol(k, ['jurisdiction','管轄區'])) obj.jurisdiction = v;
+            else if (matchCol(k, ['class','classes','類別'])) obj.classes = v;
+            else if (matchCol(k, ['goods_services','goods','商品服務'])) obj.goods_services = v;
+            else if (matchCol(k, ['concerns','notes','備註'])) obj.concerns = v;
+          });
+          return obj;
+        }).filter(function(m) { return m.mark; });
+        if (marks.length > 0) result.marks = marks;
+      }
+    }
+  });
+
+  return result;
+}
+
+// Helper: flexible column name matching
+function matchCol(colName, candidates) {
+  for (var i = 0; i < candidates.length; i++) {
+    if (colName === candidates[i] || colName.includes(candidates[i])) return true;
+  }
+  return false;
+}
+
+// Helper: find value from row by multiple possible keys
+function findVal(row, keys) {
+  for (var i = 0; i < keys.length; i++) {
+    // Try exact match first
+    if (row[keys[i]] !== undefined && row[keys[i]] !== '') return String(row[keys[i]]);
+    // Try case-insensitive search across all columns
+    var rowKeys = Object.keys(row);
+    for (var j = 0; j < rowKeys.length; j++) {
+      if (rowKeys[j].toLowerCase().includes(keys[i].toLowerCase()) && row[rowKeys[j]] !== '') {
+        return String(row[rowKeys[j]]);
+      }
+    }
+  }
+  return '';
+}
+
+// Helper: parse client info from rows (key-value style)
+function parseClientInfoFromRows(rows) {
+  var info = {};
+  rows.forEach(function(r) {
+    var keys = Object.keys(r);
+    // Support key-value pairs in two columns
+    if (keys.length >= 2) {
+      var key = String(r[keys[0]]).toLowerCase().trim();
+      var val = String(r[keys[1]]).trim();
+      if (!val) return;
+      if (matchCol(key, ['name','公司','名稱','company'])) {
+        if (/[\u4e00-\u9fff]/.test(val)) info.name_zh = val; else info.name_en = val;
+      }
+      else if (matchCol(key, ['industry','產業','行業'])) {
+        if (/[\u4e00-\u9fff]/.test(val)) info.industry_zh = val; else info.industry_en = val;
+      }
+      else if (matchCol(key, ['founded','成立','創立'])) info.founded = val;
+      else if (matchCol(key, ['headquarters','hq','總部','地址'])) {
+        if (/[\u4e00-\u9fff]/.test(val)) info.headquarters_zh = val; else info.headquarters_en = val;
+      }
+    }
+  });
+  return Object.keys(info).length > 0 ? info : null;
+}
+
+// Helper: handle Excel date serial numbers
+function formatExcelDate(val) {
+  if (!val) return '';
+  // If it's already a string date, return as-is
+  if (typeof val === 'string' && val.match(/\d{4}[-\/]\d{1,2}[-\/]\d{1,2}/)) return val;
+  // Excel serial number
+  if (typeof val === 'number' && val > 10000) {
+    var d = new Date((val - 25569) * 86400000);
+    return d.toISOString().split('T')[0];
+  }
+  return String(val);
 }
 
 function updateUploadZoneState(type) {
@@ -1064,7 +1280,7 @@ function updateUploadZoneState(type) {
     if (zone) {
       zone.classList.add('uploaded');
       zone.innerHTML =
-        '<input type="file" id="regFileInput" accept=".json" onchange="handleRegistrationUpload(event)">' +
+        '<input type="file" id="regFileInput" accept=".json,.xlsx,.xls,.csv" onchange="handleRegistrationUpload(event)">' +
         '<div class="check-badge">&#10003;</div>' +
         '<span class="upload-zone-icon">&#9989;</span>' +
         '<div class="upload-zone-title">' + t('regInfoTitle') + '</div>' +
@@ -1075,7 +1291,7 @@ function updateUploadZoneState(type) {
     if (zone) {
       zone.classList.add('uploaded');
       zone.innerHTML =
-        '<input type="file" id="useFileInput" accept=".json" onchange="handleUsageUpload(event)">' +
+        '<input type="file" id="useFileInput" accept=".json,.xlsx,.xls,.csv" onchange="handleUsageUpload(event)">' +
         '<div class="check-badge">&#10003;</div>' +
         '<span class="upload-zone-icon">&#9989;</span>' +
         '<div class="upload-zone-title">' + t('usageInfoTitle') + '</div>' +
