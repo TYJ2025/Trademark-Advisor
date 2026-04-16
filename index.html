@@ -877,12 +877,17 @@ function normalizeMarkType(str) {
 
 function parseClasses(str) {
   if (!str) return [];
-  return String(str).replace(/[Cc]lass\s*/g,'').split(/[,;|]/).map(c=>parseInt(c.trim())).filter(n=>!isNaN(n)&&n>=1&&n<=45);
+  return String(str)
+    .replace(/[Cc]lass\s*/g,'')
+    .replace(/第/g,'').replace(/[類类]\s*/g,'')
+    .split(/[,;|、／\/]/)
+    .map(c=>parseInt(c.trim()))
+    .filter(n=>!isNaN(n)&&n>=1&&n<=45);
 }
 
 function parseJurisdictions(str) {
   if (!str) return [];
-  return String(str).split(/[,;|]/).map(j=>j.trim().toUpperCase()).filter(Boolean);
+  return String(str).split(/[,;|、／\/]/).map(j=>j.trim().toUpperCase()).filter(Boolean);
 }
 
 function normalizeMark(obj) {
@@ -1474,6 +1479,19 @@ function generateAutoUsageAnalysis(marks, clientInfo) {
         actual_use: m.mark.replace(/[&]/g, '').replace(/\s+/g, '') + (isZh ? '（社群媒體及 hashtag 使用版本）' : ' (social media and hashtag version)'),
         risk: 'low'
       });
+    } else if (hasChinese && m.mark.length >= 2) {
+      // Chinese-only marks: suggest abbreviated or stylized variants
+      analysis.mark_variants.push({
+        registered: m.mark,
+        actual_use: m.mark + (isZh ? '（電商平台、社群媒體可能出現之簡稱或設計變體）' : ' (abbreviated or stylized variant on e-commerce/social media)'),
+        risk: 'low'
+      });
+    } else if (hasEnglish) {
+      analysis.mark_variants.push({
+        registered: m.mark,
+        actual_use: m.mark.toLowerCase() + (isZh ? '（網路使用小寫版本）' : ' (lowercase version used online)'),
+        risk: 'low'
+      });
     }
   });
 
@@ -1492,8 +1510,17 @@ function generateAutoUsageAnalysis(marks, clientInfo) {
   });
   allClasses.sort(function(a,b) { return a-b; });
 
+  // Build registered scope from goods/services or fall back to class descriptions
+  var registeredScope = '';
   if (allGoods.length > 0) {
-    var registeredScope = allGoods.join(isZh ? '；' : '; ');
+    registeredScope = allGoods.join(isZh ? '；' : '; ');
+  } else if (allClasses.length > 0) {
+    registeredScope = allClasses.map(function(c) {
+      return (isZh ? '第' + c + '類 ' : 'Class ' + c + ': ') + niceLabel(c);
+    }).join(isZh ? '；' : '; ');
+  }
+
+  if (registeredScope || allClasses.length > 0) {
     var suggestedItems = isZh
       ? ['線上銷售通路', '社群媒體行銷推廣', '跨境電商服務', '數位廣告素材']
       : ['Online retail channels', 'Social media marketing', 'Cross-border e-commerce', 'Digital advertising assets'];
@@ -1507,8 +1534,8 @@ function generateAutoUsageAnalysis(marks, clientInfo) {
     });
 
     analysis.goods_scope_comparison = {
-      registered_scope: registeredScope,
-      actual_scope: registeredScope + (isZh ? '、' : ', ') + suggestedItems.join(isZh ? '、' : ', '),
+      registered_scope: registeredScope || (isZh ? '（未提供商品服務說明）' : '(No goods/services description provided)'),
+      actual_scope: (registeredScope || '') + (registeredScope ? (isZh ? '、' : ', ') : '') + suggestedItems.join(isZh ? '、' : ', '),
       gap_items: suggestedItems,
       gap_classes: suggestedClasses.slice(0, 4)
     };
@@ -1624,7 +1651,7 @@ function renderAll(data) {
   // Summary dashboard
   const registered = normalizedMarks.filter(m=>m.status==='registered'||m.status==='post-reg').length;
   const pending = normalizedMarks.filter(m=>m.status==='pending'||m.status==='intent'||m.status==='published').length;
-  const atRisk = normalizedMarks.filter(m=>m.status==='renewal'||m.status==='unregistered').length;
+  const atRisk = normalizedMarks.filter(m=>{ var r=computeRisk(m); return r==='HIGH'||r==='MEDIUM'; }).length;
   const allClasses = [...new Set(normalizedMarks.flatMap(m=>m.classes))].sort((a,b)=>a-b);
   const allJuris = [...new Set(normalizedMarks.flatMap(m=>m.jurisdictions))];
 
