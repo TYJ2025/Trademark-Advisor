@@ -1,0 +1,5 @@
+# Local-only snapshot backups (pre-2026-05-24 sync)
+archive/
+
+# macOS
+.DS_Store
